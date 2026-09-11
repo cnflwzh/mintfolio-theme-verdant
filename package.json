@@ -1,7 +1,7 @@
 {
   "name": "@mintfolio/theme-default",
-  "version": "0.1.1",
-  "description": "Mintfolio's portfolio theme with cards, reading tools and eight palettes",
+  "version": "0.1.2",
+  "description": "Verdant, a Mintfolio theme for personal homepages and quiet reading.",
   "type": "module",
   "files": [
     "theme.mjs",
@@ -15,7 +15,10 @@
     "lib",
     "assets",
     "config",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "licenses"
   ],
   "exports": {
     "./theme": "./theme.mjs",
@@ -51,5 +54,15 @@
     "check": "astro check && node node_modules/@typescript/native/bin/tsc --noEmit",
     "prepack": "npm run check",
     "deps:update": "node tools/update-local-deps.mjs"
+  },
+  "license": "GPL-3.0-only",
+  "author": "CNFLWZH",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnflwzh/mintfolio-theme-verdant.git"
+  },
+  "homepage": "https://github.com/cnflwzh/mintfolio-theme-verdant#readme",
+  "bugs": {
+    "url": "https://github.com/cnflwzh/mintfolio-theme-verdant/issues"
   }
 }

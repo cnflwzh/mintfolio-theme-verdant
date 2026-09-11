@@ -1,42 +1,66 @@
-# @mintfolio/theme-default
+# Verdant
 
-Mintfolio 的完整视觉主题，包含个人主页、侧栏、文章卡片、八套配色、明暗模式和阅读工具。此包独立于 Core 安装；只有选择本主题时，Core 才加载它声明的 React/Tailwind 构建工具。
+一个给 [Mintfolio](https://github.com/cnflwzh/mintfolio) 使用的个人主页与博客主题。
 
-当前包可通过本地 registry 或 tarball 安装，尚未发布到公共 registry。Core >= 0.1.1 的站点推荐使用以下命令，一次完成安装与配置生成：
+Verdant 保留了宽松的留白、文章卡片和绿色主色，也提供其他七套配色。主页可以放资料、项目与推荐文章；阅读页提供目录、代码复制、图片预览和阅读进度。
 
-```sh
-npx mintfolio theme:add default
-```
+![Verdant 首页](docs/assets/home-desktop.webp)
 
-```js
-// theme.config.mjs
+## 安装
+
+先按 [入门教程](https://github.com/cnflwzh/mintfolio/wiki/Getting-Started) 建好站点，再在站点目录运行：
+
+~~~sh
+mintfolio theme install verdant --use
+mintfolio dev
+~~~
+
+项目仍在开发，上述安装流程适用于 npm 发布后。verdant 别名需要 Core >= 0.1.5。
+
+Verdant 沿用 @mintfolio/theme-default 包名，清单 id 仍为 default，配置文件仍叫 theme-default.config.mjs。原有的 default、happyhues 与完整包名继续可用。
+
+## 调整主题
+
+站点根目录的 theme-default.config.mjs 是显示设置入口。它会自动生成，重复初始化或升级会保留你的修改。
+
+~~~js
 export default {
-  theme: '@mintfolio/theme-default',
+  initialMode: 'auto',
+  initialPalette: '1',
+  homePageSize: 6,
+  archivePageSize: 8,
+  sidebar: {
+    quote: { enabled: true, text: '慢慢写，也认真读。', author: '' },
+  },
 };
-```
+~~~
 
-站点根目录会生成 `theme-default.config.mjs`，包含全部现有设置、中文注释、8 套配色说明和数组条目示例。直接修改该文件即可；开发服务会监听并重新加载。类型来自公开的 `@mintfolio/theme-default/settings` 入口，模板本身随主题包发布。
+initialPalette 使用字符串 '1' 到 '8'。访客在浏览器中保存的配色偏好优先于初始值。网站标题、头像和项目内容放在 site.config.ts；侧栏、推荐文章和文末插图放在主题设置中。
 
-继续使用 `npm install @mintfolio/theme-default` 也可以：随后 `npm run dev` 或 `npm run build` 会自动补齐配置。需要立即生成时运行 `npx mintfolio theme:init default`。这套流程由 Core 执行，不依赖 npm 是否允许依赖包的 postinstall 脚本。
+全部选项见 [配置模板](config/theme-default.config.mjs) 与 [主题配置教程](https://github.com/cnflwzh/mintfolio/wiki/Themes)。设置合并顺序为清单默认值、独立主题文件、旧内联 settings；数组整体替换。
 
-配置文件只在第一次创建，重复安装、同步、启动或升级都不会覆盖已有内容。以后新增的配置项仍会使用清单默认值，可对照包内 `config/theme-default.config.mjs` 手动补充。
+## 页面与资源
 
-设置优先级为：主题清单默认值 → `theme-default.config.mjs` → `theme.config.mjs` 中旧的内联 `settings`。嵌套对象递归合并，数组整组替换。建议把显示设置集中在专属文件中；未知键和错误类型会阻止构建。访客已有的配色/明暗偏好优先于初始设置。
+主题提供首页、文章、归档和普通页面。404 页面由 Core 补齐。首页和普通页面会显示 site.config.ts 顶层的 icp 字段；其他页面目前未统一显示备案信息。
 
-站点标题、个人资料、文章与项目属于站点的 `site.config.ts`/`content/blog`。侧栏、推荐文章显示方式、文章尾图和可选 `analyticsId` 属于此主题的 `settings`，主题包不导入宿主配置。
+字体与图标随包分发。React 和 Tailwind 在启用本主题时由 Core 加载。文章读取、URL、搜索和解锁逻辑使用 Core 公共 API。
 
-本主题的目录、图片预览、文章解锁、代码复制、筛选与分页调用 `@mintfolio/core/client`；本包保留 HTML、CSS、图标和界面交互适配。`home`、`post`、`archive`、`page` 由本主题渲染，未声明的 404 页面使用 Core 的 Minimal。
+![阅读页面](docs/assets/article-reading.webp)
 
-`default` / `happyhues` 是旧配置的兼容别名，仍要求安装本包。Core 的默认兜底是 Minimal。
+## 修改源码
 
-## 独立仓库开发
-
-完整视觉主题。pages、layouts、components、styles、assets 和 scripts 只属于本主题。scripts 使用 Core 控制器适配自己的 DOM。不得加入内容读取、路由或加密实现。
-
-```sh
+~~~sh
+git clone https://github.com/cnflwzh/mintfolio-theme-verdant.git
+cd mintfolio-theme-verdant
 npm ci
 npm run check
 npm pack
-```
+~~~
 
-这个仓库可单独安装，不需要 PersonalSite 或其他源码目录。拆分前历史保留在原 PersonalSite，起点见 MIGRATION.md。 尚未发布的依赖固定在 vendor 和锁文件中；更新方式见 vendor/README.md。
+将打出的 tgz 安装到测试站点，检查桌面、手机和密码文章页面。定制请保存在自己的主题仓库中，直接修改 node_modules 会在重新安装后丢失。
+
+[主题开发教程](https://github.com/cnflwzh/mintfolio/wiki/Theme-Development) · [贡献说明](CONTRIBUTING.md) · [安全问题](SECURITY.md)
+
+## 许可证
+
+代码为 [GPL-3.0-only](LICENSE)。Inter、JetBrains Mono、Playfair Display 按 SIL OFL 1.1 分发，原始声明保存在 [licenses](licenses) 中。
