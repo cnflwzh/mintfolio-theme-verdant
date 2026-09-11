@@ -15,7 +15,7 @@ mintfolio theme install verdant --use
 mintfolio dev
 ~~~
 
-项目仍在开发，上述安装流程适用于 npm 发布后。verdant 别名需要 Core >= 0.1.5。
+项目仍在持续开发中。verdant 别名需要 Core >= 0.1.5。
 
 Verdant 沿用 @mintfolio/theme-default 包名，清单 id 仍为 default，配置文件仍叫 theme-default.config.mjs。原有的 default、happyhues 与完整包名继续可用。
 
