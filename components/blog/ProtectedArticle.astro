@@ -1,0 +1,89 @@
+---
+import type { ArticleBody } from '@mintfolio/theme-api/astro';
+import ArticleProse from './ArticleProse.astro';
+
+interface Props {
+  /** Only Core's opaque protected body may cross into this password form. */
+  body: Extract<ArticleBody, { kind: 'protected' }>;
+}
+const { body } = Astro.props;
+const { postId, payload } = body;
+---
+
+  <section class="protected-post" data-protected-post data-post-id={postId} data-state="locked">
+    <div class="password-gate">
+      <span class="gate-icon" aria-hidden="true">🔒</span>
+      <p class="gate-eyebrow">PRIVATE NOTE</p>
+      <h2>这篇文章已加密</h2>
+      <p class="gate-description">输入文章密码，继续阅读。</p>
+      <form class="password-form" method="post">
+        <label for="article-password">文章密码</label>
+        <div class="password-actions">
+          <input id="article-password" type="password" autocomplete="current-password" required disabled
+            aria-describedby="password-status" placeholder="请输入密码" />
+          <button type="submit" disabled>解锁文章</button>
+        </div>
+        <p id="password-status" class="password-status" role="status" aria-live="polite"></p>
+      </form>
+      <noscript><p>请启用 JavaScript 后输入密码解锁。</p></noscript>
+    </div>
+    <div class="unlocked-bar" hidden>
+      <span>🔓 文章已解锁</span>
+      <button type="button" class="lock-article">重新锁定</button>
+    </div>
+    <div class="protected-article-content" hidden tabindex="-1"></div>
+    <template data-prose-template><ArticleProse /></template>
+    <slot name="toc-template" />
+    <script is:inline type="application/json" class="encrypted-article-data" set:html={JSON.stringify(payload)} />
+  </section>
+
+
+<style>
+  .password-gate {
+    padding: clamp(1.5rem, 5vw, 3rem);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: radial-gradient(ellipse at top right, var(--color-play-soft), transparent 65%), var(--color-surface);
+    box-shadow: 6px 6px 0 var(--color-primary-soft);
+    text-align: center;
+  }
+  .gate-icon { display: inline-grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 1rem; background: var(--color-play-soft); font-size: 1.5rem; }
+  .gate-eyebrow { margin-top: 1rem; color: var(--color-primary); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; }
+  h2 { margin: 0.55rem 0; color: var(--color-text); font-size: clamp(1.4rem, 4vw, 1.9rem); }
+  .gate-description { color: var(--color-text-muted); }
+  .password-form { max-width: 27rem; margin: 1.8rem auto 0; text-align: left; }
+  label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 600; }
+  .password-actions { display: flex; gap: 0.6rem; }
+  input { min-width: 0; flex: 1; padding: 0.8rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg); color: var(--color-text); font: inherit; }
+  input:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+  button {
+    --button-bg: var(--color-primary);
+    padding: 0.8rem 1rem;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: var(--button-bg);
+    color: var(--color-on-primary);
+    font: inherit;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background-color var(--transition-fast), opacity var(--transition-fast), transform var(--transition-fast);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:not(:disabled) { background: color-mix(in srgb, var(--button-bg) 90%, var(--color-text) 10%); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    button:active:not(:disabled) { transform: scale(0.98); }
+  }
+  button:disabled { opacity: 0.6; cursor: wait; }
+  .password-status { min-height: 1.5em; margin-top: 0.7rem; color: var(--color-text-muted); font-size: 0.85rem; }
+  .unlocked-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; color: var(--color-text-muted); font-size: 0.85rem; }
+  .lock-article { --button-bg: var(--color-primary-soft); padding: 0.45rem 0.8rem; color: var(--color-primary); }
+  [hidden] { display: none !important; }
+  @media (max-width: 420px) { .password-actions { flex-direction: column; } }
+</style>
+
+<script>
+  import '../../scripts/protectedArticle';
+</script>

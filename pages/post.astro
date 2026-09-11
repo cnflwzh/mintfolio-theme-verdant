@@ -1,0 +1,1029 @@
+---
+/** Default article layout receives rendered body or an opaque encrypted payload. */
+import Base from '../layouts/Base.astro';
+import ArticleProse from '../components/blog/ArticleProse.astro';
+import CodeBlockEnhancer from '../components/blog/CodeBlockEnhancer.astro';
+import ProtectedArticle from '../components/blog/ProtectedArticle.astro';
+import Image from '@mintfolio/core/components/Image.astro';
+import type { PageProps, PostPageData } from '@mintfolio/theme-api/astro';
+import type { DefaultSettings } from '../settings';
+
+interface Props extends PageProps<DefaultSettings, PostPageData> {}
+const { theme, page } = Astro.props;
+const { post, body } = page;
+const tocHeadings = body.kind === 'public' ? body.headings.filter((heading) => heading.depth === 2 || heading.depth === 3) : [];
+const profileAvatar = theme.site.profile.avatar;
+const footerImage = theme.settings.article.footerImage.src || theme.site.profile.avatar;
+
+/** Format the Core-provided ISO publication date without changing its timezone. */
+function formatDate(date: Date): string {
+  return date.toISOString().split('T')[0];
+}
+---
+
+<Base theme={theme} page={page}>
+  <article class="blog-post" id="content">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="文章导航">
+        <button type="button" class="back-btn" id="back-btn" aria-label="返回上一页" title="返回上一页">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+      </nav>
+
+      <header class:list={['post-header', { 'no-cover': !post.cover }]}>
+        {post.cover && (
+          <div class="post-hero-cover glass-card">
+            <Image src={post.cover} alt={post.title} loading="lazy" width={800} height={450} />
+            <div class="post-hero-cover-mask" aria-hidden="true"></div>
+          </div>
+        )}
+
+        <h1 class="gradient-text post-title" transition:name={`post-title-${post.id}`}>{post.title}</h1>
+        <div class="post-meta">
+          <time class="post-date" datetime={new Date(post.publishedAt).toISOString()}>
+            {formatDate(new Date(post.publishedAt))}
+          </time>
+          {post.tags && post.tags.length > 0 && (
+            <div class="post-tags">
+              {post.tags.map(tag => (
+                <a href={tag.url} class="tag">{tag.label}</a>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div class="post-author post-author-shell post-shell-card">
+          <Image class="author-avatar" src={profileAvatar} alt={theme.site.profile.name} loading="lazy" width={48} height={48} />
+          <div class="author-text">
+            <p class="author-name">{theme.site.profile.name}</p>
+            <p class="author-signature">{theme.site.profile.signature}</p>
+          </div>
+        </div>
+      </header>
+
+      {body.kind === 'protected' ? (
+        <ProtectedArticle body={body}>
+          {/* Empty theme markup only: neither headings nor article text are emitted while locked. */}
+          <template slot="toc-template" data-toc-template>
+          <!-- TOC 按钮（会被 JS 移动到 ui-float-right 容器中） -->
+          <button class="toc-toggle" id="toc-toggle" aria-label="目录" aria-expanded="false" aria-controls="toc-card" title="目录" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" aria-hidden="true">
+              <path d="M4 6h16M4 12h12M4 18h8"/>
+            </svg>
+          </button>
+
+          <!-- 遮罩层（仅平板/移动端） -->
+          <div class="toc-overlay" id="toc-overlay" aria-hidden="true"></div>
+
+          <!-- TOC 面板 -->
+          <aside class="toc-card glass-card" id="toc-card">
+            <div class="toc-header">
+              <div class="toc-progress" role="progressbar" aria-label="文章阅读进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+              <h2 class="toc-title">目录</h2>
+            </div>
+            <nav class="toc-nav" aria-label="文章目录">
+              {[{ depth: 2, slug: '', text: '' }].map((heading) => (
+                <a
+                  href={`#${heading.slug}`}
+                  class={`toc-link depth-${heading.depth}`}
+                >
+                  {heading.text}
+                </a>
+              ))}
+            </nav>
+          </aside>
+          </template>
+        </ProtectedArticle>
+      ) : (
+        <>
+          {tocHeadings.length > 0 && (
+            <>
+          <!-- TOC 按钮（会被 JS 移动到 ui-float-right 容器中） -->
+          <button class="toc-toggle" id="toc-toggle" aria-label="目录" aria-expanded="false" aria-controls="toc-card" title="目录" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" aria-hidden="true">
+              <path d="M4 6h16M4 12h12M4 18h8"/>
+            </svg>
+          </button>
+
+          <!-- 遮罩层（仅平板/移动端） -->
+          <div class="toc-overlay" id="toc-overlay" aria-hidden="true"></div>
+
+          <!-- TOC 面板 -->
+          <aside class="toc-card glass-card" id="toc-card">
+            <div class="toc-header">
+              <div class="toc-progress" role="progressbar" aria-label="文章阅读进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+              <h2 class="toc-title">目录</h2>
+            </div>
+            <nav class="toc-nav" aria-label="文章目录">
+              {tocHeadings.map((heading) => (
+                <a
+                  href={`#${heading.slug}`}
+                  class={`toc-link depth-${heading.depth}`}
+                >
+                  {heading.text}
+                </a>
+              ))}
+            </nav>
+          </aside>
+            </>
+          )}
+          <ArticleProse><Fragment set:html={body.html} /></ArticleProse>
+        </>
+      )}
+
+      <CodeBlockEnhancer />
+
+{theme.settings.article.footerImage.enabled && (
+  <div class="post-footer-image glass-card">
+    <Image src={footerImage} alt="文章结尾插图" loading="lazy" width={800} height={300} />
+  </div>
+)}
+
+<!-- Image Lightbox Modal -->
+<dialog class="image-lightbox" id="image-lightbox" aria-label="图片预览">
+  <button class="lightbox-close" id="lightbox-close" type="button" aria-label="关闭图片预览">×</button>
+  <div class="lightbox-viewport" id="lightbox-viewport">
+    <img class="lightbox-image" id="lightbox-image" alt="图片预览" draggable="false" />
+  </div>
+  <div class="lightbox-controls" role="group" aria-label="图片缩放">
+    <button id="lightbox-zoom-out" type="button" aria-label="缩小图片" title="缩小图片">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M5 12h14" /></svg>
+    </button>
+    <output id="lightbox-zoom-level" aria-live="polite" aria-label="缩放比例">100%</output>
+    <button id="lightbox-zoom-in" type="button" aria-label="放大图片" title="放大图片">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5v14" /></svg>
+    </button>
+    <button class="lightbox-reset" id="lightbox-reset" type="button" title="重置缩放">重置</button>
+  </div>
+</dialog>
+</div>
+</article>
+</Base>
+
+<style>
+  /* Article Page Custom Scrollbar - Override global hide */
+  html.blog-article-page,
+  html.blog-article-page body {
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--color-primary) var(--color-bg) !important;
+    -ms-overflow-style: auto !important;
+  }
+
+  html.blog-article-page::-webkit-scrollbar,
+  html.blog-article-page body::-webkit-scrollbar {
+    width: 10px !important;
+    height: 10px !important;
+    display: block !important;
+  }
+
+  html.blog-article-page::-webkit-scrollbar-track,
+  html.blog-article-page body::-webkit-scrollbar-track {
+    background: var(--color-bg);
+    border-radius: 5px;
+  }
+
+  html.blog-article-page::-webkit-scrollbar-thumb,
+  html.blog-article-page body::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      var(--color-primary) 0%,
+      color-mix(in srgb, var(--color-primary) 70%, var(--color-secondary)) 50%,
+      var(--color-primary) 100%
+    );
+    border-radius: 5px;
+    border: 2px solid var(--color-bg);
+    background-clip: padding-box;
+    transition: background 0.2s ease;
+  }
+
+  html.blog-article-page::-webkit-scrollbar-thumb:hover,
+  html.blog-article-page body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg,
+      var(--color-secondary) 0%,
+      var(--color-primary) 50%,
+      var(--color-secondary) 100%
+    );
+  }
+
+  html.blog-article-page::-webkit-scrollbar-corner,
+  html.blog-article-page body::-webkit-scrollbar-corner {
+    background: var(--color-bg);
+  }
+
+  .blog-post {
+    min-height: 100vh;
+    padding: var(--section-padding);
+    padding-top: clamp(1rem, 2.4vw, 1.75rem);
+    background: var(--color-bg);
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .breadcrumb {
+    position: fixed;
+    left: max(1.5rem, calc((100vw - 800px) / 2 - 5.5rem));
+    top: clamp(1.75rem, 4vh, 2.5rem);
+    z-index: 200;
+  }
+
+  .back-btn {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    cursor: pointer;
+  }
+
+  .back-btn:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .post-header {
+    margin-bottom: 1.6rem;
+    text-align: center;
+  }
+
+  .post-header.no-cover {
+    padding-top: 1.5rem;
+  }
+
+  .post-hero-cover {
+    position: relative;
+    width: 100%;
+    margin: 0 auto 1.1rem;
+    border-radius: calc(var(--radius-lg) + 2px);
+    overflow: hidden;
+    aspect-ratio: 16 / 7;
+    border: 1px solid color-mix(in srgb, var(--color-border) 68%, transparent);
+    box-shadow: var(--shadow-md);
+  }
+
+  .post-hero-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .post-hero-cover-mask {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 35%),
+      linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0) 42%);
+    pointer-events: none;
+  }
+
+  .post-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+.post-shell-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.post-author {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+}
+
+.post-author-shell {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.author-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-primary);
+  flex-shrink: 0;
+}
+
+.author-text {
+  text-align: left;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.author-name {
+  font-size: 1rem;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.author-signature {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-top: 0.15rem;
+}
+
+  .post-date {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    font-family: monospace;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    background: var(--color-tag-bg);
+    color: var(--color-tag-text);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+  }
+
+  .tag:hover {
+    background: var(--color-secondary);
+    color: var(--color-bg);
+  }
+
+  .post-footer-image {
+    margin-top: 1rem;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+.post-footer-image img {
+  display: block;
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+}
+
+/* Image Lightbox */
+.image-lightbox {
+  display: none;
+  margin: 0;
+  border: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+
+  padding: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--transition-fast), visibility var(--transition-fast);
+}
+
+.image-lightbox[open] {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+@starting-style {
+  .image-lightbox[open] {
+    opacity: 0;
+  }
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  z-index: 1001;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.lightbox-viewport {
+  position: absolute;
+  inset: 4.5rem 1rem calc(5rem + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 100%;
+  flex: none;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  -webkit-user-drag: none;
+  transform-origin: center;
+}
+
+.lightbox-controls {
+  position: absolute;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+}
+
+.lightbox-controls,
+.lightbox-close {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.lightbox-controls button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: inherit;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), opacity var(--transition-fast), transform var(--transition-fast);
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox-controls button:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+}
+
+.lightbox-controls svg {
+  pointer-events: none;
+}
+
+.lightbox-controls .lightbox-reset {
+  width: auto;
+  padding: 0 0.85rem;
+  font-size: 0.85rem;
+}
+
+.lightbox-controls button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.lightbox-controls button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.lightbox-controls button:focus-visible,
+.lightbox-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+#lightbox-zoom-level {
+  min-width: 4rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+  @media (max-width: 768px) {
+    .blog-post {
+      padding-top: 0.6rem;
+    }
+
+    .breadcrumb {
+      left: 1rem;
+      top: 1rem;
+    }
+
+    .post-title {
+      font-size: 2rem;
+    }
+
+    .post-hero-cover {
+      margin-bottom: 1rem;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius-md);
+    }
+
+    .post-author {
+      width: 100%;
+      max-width: 100%;
+      padding: 0.85rem 1rem;
+      gap: 0.85rem;
+    }
+
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+    }
+
+    .author-name {
+      font-size: 0.92rem;
+    }
+
+    .author-signature {
+      font-size: 0.8rem;
+    }
+
+    .post-footer-image {
+      max-width: 100%;
+    }
+
+    .post-footer-image img {
+      max-height: 220px;
+    }
+  }
+
+  /* TOC Toggle Button - 样式与 Base.astro 按钮一致 */
+  .toc-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+    order: -1;  /* 放在主题按钮上面 */
+  }
+
+  .toc-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .toc-toggle.active {
+    background: var(--color-secondary);
+    color: var(--color-bg);
+    border-color: var(--color-secondary);
+  }
+
+  .toc-toggle:active {
+    transform: scale(0.95);
+  }
+
+  .toc-toggle:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* ============================================
+     TABLE OF CONTENTS - Modern Glass Design
+     ============================================ */
+
+  .toc-card {
+    position: relative;
+    padding: 0;
+    margin-bottom: 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--color-surface) 95%, var(--color-primary) 2%) 0%,
+      color-mix(in srgb, var(--color-surface) 90%, transparent) 50%,
+      color-mix(in srgb, var(--color-surface) 88%, var(--color-secondary) 3%) 100%
+    );
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    box-shadow:
+      0 4px 24px color-mix(in srgb, var(--color-text) 6%, transparent),
+      0 1px 2px color-mix(in srgb, var(--color-text) 4%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--color-surface) 80%, transparent);
+    overflow: hidden;
+  }
+
+  .toc-header {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+  }
+
+  /* Keep the progress bar inside the sticky header while the card scrolls. */
+  .toc-progress {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: color-mix(in srgb, var(--color-border) 50%, transparent);
+    z-index: 2;
+  }
+
+  .toc-progress span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: var(--reading-progress, 0%);
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+    z-index: 3;
+    transition: width 0.15s ease-out;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary) 50%, transparent);
+  }
+
+  .toc-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text);
+    margin: 0;
+    padding: 1rem 1.1rem 0.85rem;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface) 98%, transparent) 0%,
+      color-mix(in srgb, var(--color-surface) 85%, transparent) 100%
+    );
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);
+  }
+
+  .toc-title::before {
+    content: '◆';
+    font-size: 0.5rem;
+    color: var(--color-primary);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-primary) 40%, transparent));
+  }
+
+  .toc-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    margin-left: 0.5rem;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--color-border) 60%, transparent), transparent);
+  }
+
+  .toc-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.75rem 0.85rem 0.85rem;
+  }
+
+  .toc-link {
+    position: relative;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.7rem;
+    border: 1px solid transparent;
+    transition:
+      color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.2s ease;
+  }
+
+  /* Bullet for H3 */
+  .toc-link.depth-3 {
+    margin-left: 1rem;
+    padding-left: 1.5rem;
+    font-size: 0.75rem;
+    opacity: 0.85;
+  }
+
+  .toc-link.depth-3::before {
+    content: '';
+    position: absolute;
+    left: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-text-muted) 40%, transparent);
+    transition:
+      background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Vertical Progress Line */
+  .toc-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: transparent;
+    border-radius: 1px;
+    transition: background 0.2s ease;
+  }
+
+  .toc-link:hover {
+    color: var(--color-text);
+    background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+    border-color: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    transform: translateX(3px);
+    box-shadow:
+      0 2px 8px color-mix(in srgb, var(--color-primary) 8%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--color-surface) 50%, transparent);
+  }
+
+  .toc-link.depth-3:hover {
+    opacity: 1;
+  }
+
+  .toc-link.depth-3:hover::before {
+    background: var(--color-primary);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--color-primary) 50%, transparent);
+  }
+
+  .toc-link.active {
+    color: var(--color-primary);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-primary) 10%, transparent) 0%,
+      color-mix(in srgb, var(--color-secondary) 6%, transparent) 100%
+    );
+    border-color: color-mix(in srgb, var(--color-primary) 25%, transparent);
+    box-shadow:
+      0 4px 16px color-mix(in srgb, var(--color-primary) 10%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--color-surface) 60%, transparent);
+    transform: translateX(4px);
+  }
+
+  .toc-link.active::after {
+    background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+  }
+
+  .toc-link.depth-3.active::before {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    box-shadow: 0 0 10px color-mix(in srgb, var(--color-primary) 60%, transparent);
+  }
+
+  /* Focus States for Accessibility */
+  .toc-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  .toc-overlay {
+    display: none;
+  }
+  /* Tablet & Mobile TOC Drawer (max-width: 1319px) */
+  @media (max-width: 1319px) {
+    /* TOC Overlay */
+    .toc-overlay {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--color-bg) 90%, transparent) 0%,
+        color-mix(in srgb, var(--color-text) 15%, transparent) 100%
+      );
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 235;
+      backdrop-filter: blur(2px);
+    }
+
+    .toc-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Mobile TOC Drawer Panel */
+    .toc-card {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: min(85vw, 340px);
+      margin-bottom: 0;
+      border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+      border: none;
+      border-left: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+      transform: translateX(100%);
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+      z-index: 240;
+      overflow: auto;
+      overscroll-behavior: contain;
+    }
+
+    .toc-card.open {
+      transform: translateX(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Enhanced mobile TOC content */
+    .toc-card .toc-title {
+      padding-top: 1.25rem;
+    }
+
+    .toc-card .toc-nav {
+      padding-bottom: max(0.85rem, env(safe-area-inset-bottom, 0.85rem));
+    }
+
+    .toc-card .toc-link {
+      padding: 0.65rem 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .toc-card .toc-link.depth-3 {
+      padding-left: 1.6rem;
+      font-size: 0.8rem;
+    }
+  }
+
+  /* Desktop Sidebar TOC (min-width 1320px) */
+  @media (min-width: 1320px) {
+    .toc-card {
+      position: fixed;
+      top: 8rem;
+      right: max(1.25rem, calc((100vw - 800px) / 2 - 250px - 1rem));
+      width: 240px;
+      max-height: calc(100vh - 10rem);
+      margin-bottom: 0;
+      z-index: 5;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in srgb, var(--color-border) 50%, transparent) transparent;
+    }
+
+    /* Custom scrollbar for desktop */
+    .toc-card::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .toc-card::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .toc-card::-webkit-scrollbar-thumb {
+      background: color-mix(in srgb, var(--color-border) 50%, transparent);
+      border-radius: 2px;
+    }
+
+    .toc-card::-webkit-scrollbar-thumb:hover {
+      background: color-mix(in srgb, var(--color-primary) 60%, transparent);
+    }
+
+    /* Subtle entrance animation */
+    .toc-card {
+      animation: tocSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes tocSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Enhanced hover glow effect for desktop */
+    .toc-link:hover {
+      box-shadow:
+        0 4px 12px color-mix(in srgb, var(--color-primary) 12%, transparent),
+        0 0 20px color-mix(in srgb, var(--color-primary) 5%, transparent),
+        inset 0 1px 0 color-mix(in srgb, var(--color-surface) 60%, transparent);
+    }
+
+    .toc-link.active {
+      box-shadow:
+        0 6px 20px color-mix(in srgb, var(--color-primary) 15%, transparent),
+        0 0 30px color-mix(in srgb, var(--color-primary) 8%, transparent),
+        inset 0 1px 0 color-mix(in srgb, var(--color-surface) 60%, transparent);
+    }
+
+    /* Desktop TOC hidden state */
+    .toc-card.hidden {
+      display: none;
+      opacity: 0;
+      transform: translateX(20px);
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    /* Desktop TOC transition */
+    .toc-card {
+      transition:
+        transform 0.35s cubic-bezier(0.32, 0.72, 0, 1),
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .toc-card,
+    .toc-link,
+    .toc-toggle,
+    .toc-overlay,
+    .toc-float-btn {
+      transition: opacity 0.15s ease, visibility 0.15s ease;
+    }
+
+    .toc-link:hover,
+    .toc-link.active {
+      transform: none;
+    }
+
+    .toc-toggle:hover,
+    .toc-toggle:active {
+      transform: none;
+    }
+
+    @keyframes tocSlideIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  }
+</style>
+
+<script>
+  import '../scripts/article';
+</script>

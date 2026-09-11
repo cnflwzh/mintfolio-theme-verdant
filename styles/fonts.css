@@ -1,0 +1,120 @@
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src:
+    local('Inter Light'),
+    local('Inter-Light'),
+    url('../assets/fonts/Inter-300.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    local('Inter Regular'),
+    local('Inter-Regular'),
+    url('../assets/fonts/Inter-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src:
+    local('Inter Medium'),
+    local('Inter-Medium'),
+    url('../assets/fonts/Inter-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src:
+    local('Inter SemiBold'),
+    local('Inter-SemiBold'),
+    url('../assets/fonts/Inter-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src:
+    local('Inter Bold'),
+    local('Inter-Bold'),
+    url('../assets/fonts/Inter-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    local('JetBrains Mono'),
+    local('JetBrainsMono-Regular'),
+    url('../assets/fonts/JetBrainsMono-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src:
+    local('JetBrains Mono Medium'),
+    local('JetBrainsMono-Medium'),
+    url('../assets/fonts/JetBrainsMono-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    local('Playfair Display Regular'),
+    local('PlayfairDisplay-Regular'),
+    url('../assets/fonts/PlayfairDisplay-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src:
+    local('Playfair Display Medium'),
+    local('PlayfairDisplay-Medium'),
+    url('../assets/fonts/PlayfairDisplay-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src:
+    local('Playfair Display SemiBold'),
+    local('PlayfairDisplay-SemiBold'),
+    url('../assets/fonts/PlayfairDisplay-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src:
+    local('Playfair Display Bold'),
+    local('PlayfairDisplay-Bold'),
+    url('../assets/fonts/PlayfairDisplay-700.woff2') format('woff2');
+}

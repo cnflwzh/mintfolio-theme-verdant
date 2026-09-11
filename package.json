@@ -1,0 +1,49 @@
+{
+  "name": "@mintfolio/theme-default",
+  "version": "0.1.0",
+  "description": "Mintfolio's portfolio theme with cards, reading tools and eight palettes",
+  "type": "module",
+  "files": [
+    "theme.mjs",
+    "settings.ts",
+    "pages",
+    "layouts",
+    "components",
+    "scripts",
+    "utils",
+    "styles",
+    "lib",
+    "assets",
+    "README.md"
+  ],
+  "exports": {
+    "./theme": "./theme.mjs"
+  },
+  "peerDependencies": {
+    "@mintfolio/core": "^0.1.0",
+    "astro": "^7.3.2"
+  },
+  "dependencies": {
+    "@mintfolio/theme-api": "^1.0.0",
+    "@astrojs/react": "^6.0.5",
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "@astrojs/check": "^0.9.10",
+    "@mintfolio/core": "^0.1.0",
+    "astro": "^7.3.2",
+    "@types/node": "^22.20.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0"
+  },
+  "scripts": {
+    "check": "astro check && node node_modules/@typescript/native/bin/tsc --noEmit",
+    "prepack": "npm run check",
+    "deps:update": "node tools/update-local-deps.mjs"
+  }
+}

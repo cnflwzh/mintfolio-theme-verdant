@@ -1,0 +1,173 @@
+---
+/**
+ * Contact - Contact section with email and social links.
+ * 
+ * Displays contact information from the public theme context:
+ * - Primary email with mailto link
+ * - Social media links (filtered by contact.social platform names)
+ */
+import type { ThemeContext } from '@mintfolio/theme-api';
+import type { DefaultSettings } from '../../settings';
+
+/** Public site data supplied by the containing theme page. */
+interface Props { theme: ThemeContext<DefaultSettings>; }
+import type { SocialLink } from '@mintfolio/theme-api';
+
+const { theme } = Astro.props;
+// Filter social links based on contact.social platform names
+const contactSocials: SocialLink[] = theme.site.social.filter((link) =>
+  theme.site.contact.social.includes(link.platform)
+);
+---
+
+<section id="contact" class="contact-section">
+  <div class="contact-container">
+    <h2 class="section-title gradient-text">联系我</h2>
+    <p class="cta-text">保持联系</p>
+
+    <div class="glass-card contact-card">
+      <div class="contact-email">
+        <span class="label">Email</span>
+        <a href={`mailto:${theme.site.contact.email}`} class="email-link">
+          {theme.site.contact.email}
+        </a>
+      </div>
+
+      <div class="contact-socials">
+        <span class="label">社交媒体</span>
+        <div class="social-links">
+          {contactSocials.map((social) => (
+            <a
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link"
+              aria-label={social.platform}
+            >
+              <span class="social-icon">{social.icon}</span>
+              <span class="social-platform">{social.platform}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-section {
+    padding: var(--section-padding);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+  }
+
+  .contact-container {
+    max-width: var(--max-width);
+    width: 100%;
+    text-align: center;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .cta-text {
+    color: var(--color-text-muted);
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+  }
+
+  .contact-card {
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .contact-email,
+  .contact-socials {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .email-link {
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .email-link:hover {
+    color: var(--color-secondary);
+  }
+
+  .social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--color-surface);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    transition: all 0.2s ease;
+  }
+
+  .social-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .social-icon {
+    font-size: 1.125rem;
+  }
+
+  .social-platform {
+    text-transform: capitalize;
+  }
+
+  @media (max-width: 640px) {
+    .contact-card {
+      padding: 1.5rem;
+    }
+
+    .email-link {
+      font-size: 1rem;
+      word-break: break-all;
+    }
+
+    .social-links {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .social-link {
+      justify-content: center;
+    }
+  }
+</style>

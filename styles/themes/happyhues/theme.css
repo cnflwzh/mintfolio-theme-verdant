@@ -1,0 +1,225 @@
+:root {
+  --font-display: 'Playfair Display', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', serif;
+  --font-family: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --section-padding: 5rem 1.5rem;
+  --max-width: 1200px;
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+}
+
+/* Primary is for readable actions; accent and play add decorative contrast. */
+
+/* 1. 青柠薄荷 */
+:root, [data-theme="light-1"] {
+  --color-bg: #f6f8ef;
+  --color-surface: #fffef9;
+  --color-text: #243d36;
+  --color-text-muted: #556660;
+  --color-primary: #08765f;
+  --color-accent: #ff795f;
+  --color-play: #e1ee79;
+}
+
+[data-theme="dark-1"] {
+  --color-bg: #132622;
+  --color-surface: #1c342e;
+  --color-text: #edf4e5;
+  --color-text-muted: #adc5b9;
+  --color-primary: #73e0b7;
+  --color-accent: #ff9983;
+  --color-play: #d5e67b;
+}
+
+/* 2. 橘子汽水 */
+[data-theme="light-2"] {
+  --color-bg: #fff7ee;
+  --color-surface: #fffdfa;
+  --color-text: #45302b;
+  --color-text-muted: #6e564e;
+  --color-primary: #b7441c;
+  --color-accent: #526ce0;
+  --color-play: #ffc65c;
+}
+
+[data-theme="dark-2"] {
+  --color-bg: #2b211e;
+  --color-surface: #3a2d27;
+  --color-text: #fff1e3;
+  --color-text-muted: #d4b9a8;
+  --color-primary: #ffad83;
+  --color-accent: #9daeff;
+  --color-play: #ffd277;
+}
+
+/* 3. 晴空海盐 */
+[data-theme="light-3"] {
+  --color-bg: #f5f6ff;
+  --color-surface: #fdfdff;
+  --color-text: #283451;
+  --color-text-muted: #5e6981;
+  --color-primary: #3454cd;
+  --color-accent: #ff9163;
+  --color-play: #cddd76;
+}
+
+[data-theme="dark-3"] {
+  --color-bg: #182035;
+  --color-surface: #232e48;
+  --color-text: #eef2ff;
+  --color-text-muted: #b5c0dc;
+  --color-primary: #a5baff;
+  --color-accent: #ffa779;
+  --color-play: #d6e596;
+}
+
+/* 4. 葡萄跳跳糖 */
+[data-theme="light-4"] {
+  --color-bg: #faf5ff;
+  --color-surface: #fffaff;
+  --color-text: #3f3052;
+  --color-text-muted: #746180;
+  --color-primary: #7441bc;
+  --color-accent: #bbd94f;
+  --color-play: #ffadca;
+}
+
+[data-theme="dark-4"] {
+  --color-bg: #251e33;
+  --color-surface: #342a46;
+  --color-text: #f5edff;
+  --color-text-muted: #c6b3d9;
+  --color-primary: #d0acff;
+  --color-accent: #c9e477;
+  --color-play: #f7aaca;
+}
+
+/* 5. 莓果奶昔 */
+[data-theme="light-5"] {
+  --color-bg: #fff5f6;
+  --color-surface: #fffafb;
+  --color-text: #4d2f3b;
+  --color-text-muted: #805e6b;
+  --color-primary: #ba375e;
+  --color-accent: #73cec2;
+  --color-play: #f5c75c;
+}
+
+[data-theme="dark-5"] {
+  --color-bg: #2d202a;
+  --color-surface: #402d38;
+  --color-text: #ffeef3;
+  --color-text-muted: #dec0ce;
+  --color-primary: #ffabc7;
+  --color-accent: #8ad9c9;
+  --color-play: #f6d47e;
+}
+
+/* 6. 向日葵 */
+[data-theme="light-6"] {
+  --color-bg: #fff9e9;
+  --color-surface: #fffdf6;
+  --color-text: #473d26;
+  --color-text-muted: #6b5d43;
+  --color-primary: #91600c;
+  --color-accent: #4364cc;
+  --color-play: #f2c94c;
+}
+
+[data-theme="dark-6"] {
+  --color-bg: #29251b;
+  --color-surface: #393326;
+  --color-text: #fff4d9;
+  --color-text-muted: #cdc0a0;
+  --color-primary: #edcc75;
+  --color-accent: #9bb3ff;
+  --color-play: #ffb880;
+}
+
+/* 7. 海岛假日 */
+[data-theme="light-7"] {
+  --color-bg: #eff9fb;
+  --color-surface: #faffff;
+  --color-text: #253f47;
+  --color-text-muted: #4c6871;
+  --color-primary: #087387;
+  --color-accent: #f48652;
+  --color-play: #aadad0;
+}
+
+[data-theme="dark-7"] {
+  --color-bg: #15272e;
+  --color-surface: #203840;
+  --color-text: #e7f5f5;
+  --color-text-muted: #afc7cc;
+  --color-primary: #80dbe4;
+  --color-accent: #ffa875;
+  --color-play: #addbd1;
+}
+
+/* 8. 午夜游乐场 */
+[data-theme="light-8"] {
+  --color-bg: #f5f5f2;
+  --color-surface: #fdfdfa;
+  --color-text: #30394b;
+  --color-text-muted: #5c6370;
+  --color-primary: #394860;
+  --color-accent: #ffbb3b;
+  --color-play: #a4b8ec;
+}
+
+[data-theme="dark-8"] {
+  --color-bg: #1a202c;
+  --color-surface: #282f3e;
+  --color-text: #f0f1ee;
+  --color-text-muted: #b7bfce;
+  --color-primary: #c3d0ee;
+  --color-accent: #ffcb67;
+  --color-play: #9db5ef;
+}
+
+:root {
+  color-scheme: light;
+  --color-on-primary: #ffffff;
+  --color-secondary: var(--color-text);
+  --color-text-headline: var(--color-text);
+  --color-bg-alt: color-mix(in srgb, var(--color-primary) 7%, var(--color-bg));
+  --color-border: color-mix(in srgb, var(--color-text) 19%, var(--color-surface));
+  --color-tag-bg: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  --color-tag-text: var(--color-primary);
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 22%, var(--color-surface));
+  --color-play-soft: color-mix(in srgb, var(--color-play) 32%, var(--color-surface));
+  --shadow-sm: 0 2px 0 color-mix(in srgb, var(--color-text) 7%, transparent);
+  --shadow-md: 0 8px 24px color-mix(in srgb, var(--color-text) 8%, transparent);
+  --shadow-lg: 0 18px 48px color-mix(in srgb, var(--color-text) 12%, transparent);
+  --shadow-offset: 6px 6px 0 var(--color-accent-soft);
+}
+
+[data-theme^="dark-"] {
+  color-scheme: dark;
+  --color-on-primary: #18252d;
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 17%, var(--color-surface));
+  --color-play-soft: color-mix(in srgb, var(--color-play) 17%, var(--color-surface));
+  --shadow-sm: 0 2px 0 #00000024;
+  --shadow-md: 0 8px 24px #00000024;
+  --shadow-lg: 0 18px 48px #00000038;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --color-bg: #132622;
+    --color-surface: #1c342e;
+    --color-text: #edf4e5;
+    --color-text-muted: #adc5b9;
+    --color-primary: #73e0b7;
+    --color-accent: #ff9983;
+    --color-play: #d5e67b;
+    --color-on-primary: #18252d;
+  }
+}

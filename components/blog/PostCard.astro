@@ -1,0 +1,98 @@
+---
+import Image from '@mintfolio/core/components/Image.astro';
+import type { PostSummary } from '@mintfolio/theme-api';
+import { createSearchEntry } from '@mintfolio/theme-api/search';
+
+interface Props {
+  /** Core-projected metadata; includes no password or protected plaintext. */
+  post: PostSummary;
+  index: number;
+  pageSize: number;
+  variant: 'home' | 'blog';
+}
+
+const { post, index, pageSize, variant } = Astro.props;
+const Heading = variant === 'home' ? 'h3' : 'h2';
+const search = createSearchEntry(post);
+const publishedAt = new Date(post.publishedAt);
+---
+
+<article
+  class:list={['post-card', { 'home-card': variant === 'home', 'has-cover': post.cover, 'initially-hidden': index >= pageSize }]}
+  data-id={post.id}
+  data-url={post.url}
+  data-title={search.title}
+  data-description={search.description}
+  data-tags={JSON.stringify(search.tags)}
+  data-category={search.category}
+>
+  <a href={post.url} data-article-link class="post-link" draggable="false">
+    {post.cover && (
+      <div class="post-cover">
+        <Image src={post.cover} alt="" loading="lazy" width={800} height={450} draggable="false"
+          layout="constrained" widths={[400, 800]} sizes="(max-width: 600px) calc(100vw - 5rem), (max-width: 900px) 29vw, 340px" />
+      </div>
+    )}
+    <div class="post-content">
+      <div class="post-meta">
+        <span class="post-category">{post.category.label}</span>
+        <time class="post-date" datetime={post.publishedAt}>{publishedAt.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+      </div>
+      <Heading class="post-title">{post.protected && <span class="post-lock" aria-label="加密文章">🔒 </span>}{post.title}</Heading>
+      <p class="post-description">{post.description}</p>
+      {post.tags?.length ? (
+        <div class="post-tags">{post.tags.map((tag) => <span class="tag">{tag.label}</span>)}</div>
+      ) : null}
+    </div>
+    <span class="post-arrow" aria-hidden="true">→</span>
+  </a>
+</article>
+
+<style>
+  .post-card {
+    --card-color: var(--color-primary);
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+    overflow: hidden;
+  }
+  .post-card:nth-child(3n + 2) { --card-color: var(--color-accent); }
+  .post-card:nth-child(3n + 3) { --card-color: var(--color-play); }
+  .post-card::before { content: ''; position: absolute; left: 0; top: 1.5rem; bottom: 1.5rem; width: 4px; background: var(--card-color); border-radius: 0 4px 4px 0; }
+  .post-card:hover { transform: translateY(-3px); border-color: var(--color-primary); box-shadow: 5px 5px 0 color-mix(in srgb, var(--card-color) 22%, var(--color-bg)); }
+  .post-card:focus-within { border-color: var(--color-primary); }
+  .post-card.initially-hidden, .post-card.hidden { display: none; }
+  .post-link { display: flex; align-items: center; gap: 1.4rem; padding: 1.4rem 1.5rem; min-height: 210px; text-decoration: none; }
+  .post-link:focus-visible { outline-offset: -4px; border-radius: inherit; }
+  .post-content { flex: 1; min-width: 0; order: 0; }
+  .post-meta { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; margin-bottom: .7rem; }
+  .post-category { color: var(--color-primary); background: var(--color-tag-bg); padding: .15rem .6rem; border-radius: 6px; font-size: .66rem; font-weight: 650; }
+  .post-date { font: .64rem var(--font-mono); color: var(--color-text-muted); }
+  .post-title { font-size: 1.2rem; font-weight: 700; letter-spacing: -.025em; color: var(--color-text-headline); margin-bottom: .6rem; line-height: 1.5; transition: color var(--transition-fast); }
+  .post-card:hover .post-title { color: var(--color-primary); }
+  .post-description { font-size: .83rem; color: var(--color-text-muted); line-height: 1.75; margin-bottom: .9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .post-tags { display: flex; flex-wrap: wrap; gap: .3rem .65rem; }
+  .tag { color: var(--color-text-muted); font-size: .65rem; }
+  .tag::before { content: '#'; color: var(--color-primary); margin-right: .15rem; }
+  .post-cover { order: 2; flex: 0 0 29%; width: 29%; height: 165px; border-radius: var(--radius-md); overflow: hidden; background: var(--color-bg-alt); }
+  .post-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
+  .post-card:hover .post-cover img { transform: scale(1.04); }
+  .post-arrow { flex: 0 0 32px; order: 1; width: 32px; height: 32px; border: 1px solid var(--color-border); border-radius: 50%; color: var(--color-primary); display: grid; place-items: center; font-size: 1.1rem; transition: background var(--transition-fast), color var(--transition-fast); }
+  .post-card:hover .post-arrow { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-on-primary); }
+  @media (max-width: 600px) {
+    .post-link { flex-wrap: wrap; padding: 1rem; gap: 1rem; }
+    .post-cover { flex: 0 0 100%; width: 100%; height: 170px; order: -1; }
+    .post-content { flex: 1 1 0; padding-left: .2rem; }
+    .post-title { font-size: 1.06rem; }
+    .post-arrow { align-self: flex-end; }
+    .post-meta { gap: .5rem; }
+    .post-card::before { top: auto; height: 50px; bottom: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .post-card, .post-cover img, .post-arrow { transition: none; }
+    .post-card:hover, .post-card:hover .post-cover img { transform: none; }
+  }
+</style>

@@ -1,0 +1,460 @@
+---
+/**
+ * Base - Default Theme document layout.
+ * 
+ * Provides the shared page structure including:
+ * - HTML head with meta tags, favicon, and Google Analytics
+ * - Theme preloading script to prevent flash of unstyled content
+ * - Floating UI elements (theme toggle, back-to-top button, home return hint)
+ * - Page loading progress bar
+ * - Accessibility skip link and live announcer
+ * - View Transitions support via ClientRouter
+ * 
+ * Receives public theme/page props. SEO is resolved by Core, while the document
+ * shell, palette controls, and optional client navigation remain theme-owned.
+ */
+import { PALETTES } from '../lib/palettes';
+import { ClientRouter } from 'astro:transitions';
+import '../styles/fonts.css';
+import '../styles/global.css';
+import '../styles/themes/happyhues/index.css';
+
+import SeoHead from '@mintfolio/theme-api/SeoHead.astro';
+import type { PageProps } from '@mintfolio/theme-api/astro';
+import type { DefaultSettings } from '../settings';
+import faviconSvg from '../assets/favicon.svg?url';
+import faviconIco from '../assets/favicon.ico?url';
+
+/** Owns the Default Theme document only; other themes provide their own layout. */
+interface Props extends PageProps<DefaultSettings> {}
+const { theme, page } = Astro.props;
+---
+
+<!doctype html>
+<html lang={page.seo.language} data-hide-scrollbars="true">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href={faviconSvg} />
+    <link rel="icon" href={faviconIco} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" id="browser-theme-color" content="#f6f8ef" transition:persist="browser-theme-color" />
+    <SeoHead seo={page.seo} />
+    <meta name="generator" content={Astro.generator} />
+    <ClientRouter />
+    <noscript>
+      <style is:inline>
+        .post-card.initially-hidden { display: block !important; }
+        .hero { position: relative !important; }
+        .content-wrapper { margin-top: 0 !important; }
+        #load-more-wrap, .scroll-indicator { display: none !important; }
+        @media (max-width: 768px) {
+        .theme-panel { right: 1rem; bottom: calc(1.5rem + 108px); }
+      }
+    </style>
+    </noscript>
+
+    <!-- 主题预加载脚本 - 避免闪烁 -->
+    <script is:inline define:vars={{ initialMode: theme.settings.initialMode, initialPalette: theme.settings.initialPalette }}>
+      (() => {
+        let mode = initialMode;
+        let palette = initialPalette;
+        try {
+          const savedMode = localStorage.getItem('theme-mode');
+          const savedPalette = localStorage.getItem('theme-palette');
+          if (['auto', 'light', 'dark'].includes(savedMode)) mode = savedMode;
+          if (/^[1-8]$/.test(savedPalette ?? '')) palette = savedPalette;
+        } catch { /* Storage is optional in privacy-restricted browsers. */ }
+        const resolved = mode === 'auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
+        document.documentElement.dataset.theme = `${resolved}-${palette}`;
+      })();
+    </script>
+
+    {theme.settings.analyticsId && <>
+      <script is:inline async src={'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(theme.settings.analyticsId)}></script>
+      <script is:inline define:vars={{ analyticsId: theme.settings.analyticsId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', analyticsId);
+      </script>
+    </>}
+  </head>
+  <body data-hide-scrollbars="true" data-page-kind={page.kind} data-home-href={theme.urls.home()} data-archive-href={theme.urls.archive()} data-initial-mode={theme.settings.initialMode} data-initial-palette={theme.settings.initialPalette}>
+    <!-- Styles are loaded here; match browser chrome before painting page content. -->
+    <script is:inline>
+      (() => {
+        const meta = document.getElementById('browser-theme-color');
+        const background = getComputedStyle(document.documentElement).backgroundColor;
+        if (meta) meta.setAttribute('content', background);
+      })();
+    </script>
+    <div class="browser-bottom-background" aria-hidden="true"></div>
+
+    <!-- 页面加载进度条 -->
+    <div class="page-loading-progress" id="page-loading-progress" aria-hidden="true"></div>
+
+    <!-- 跳过链接 -->
+    <a href="#content" class="skip-link">跳转到主要内容</a>
+    <slot />
+
+    <!-- 无障碍状态通知区域 -->
+    <div id="a11y-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="ui-float-right" id="ui-float-right">
+      <button class="theme-toggle" id="theme-toggle" popovertarget="theme-panel" aria-label="切换主题" aria-expanded="false" aria-controls="theme-panel">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <div class="theme-panel" id="theme-panel" popover="auto" role="dialog" aria-label="主题设置" aria-hidden="true">
+        <div class="theme-section">
+          <span class="theme-label" id="theme-mode-label">模式</span>
+          <div class="theme-modes" role="radiogroup" aria-labelledby="theme-mode-label">
+            <button class="mode-btn" role="radio" aria-checked="true" data-mode="auto">自动</button>
+            <button class="mode-btn" role="radio" aria-checked="false" data-mode="light">浅色</button>
+            <button class="mode-btn" role="radio" aria-checked="false" data-mode="dark">深色</button>
+          </div>
+        </div>
+        <div class="theme-section">
+          <span class="theme-label" id="theme-palette-label">配色</span>
+          <div class="theme-palettes" id="theme-palettes" role="radiogroup" aria-labelledby="theme-palette-label">
+            {PALETTES.map((palette) => (
+              <button class="palette-btn" role="radio" aria-checked="false" aria-label={palette.name} data-palette={palette.id} title={palette.name}>
+                <span class="palette-preview" aria-hidden="true">
+                  {palette.colors.map((color) => <span style={{ background: color }}></span>)}
+                </span>
+                <span class="palette-name">{palette.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <button class="back-to-top" id="back-to-top" aria-label="回到顶部">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+          <path d="M12 19V5M5 12l7-7 7 7"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="home-return-hint-layer" id="home-return-hint-layer" aria-hidden="true">
+      <button
+        class="home-return-hint"
+        id="home-return-hint"
+        type="button"
+        aria-label="回到上面的欢迎区"
+      >
+        想回到上面的欢迎区？点这里就行
+      </button>
+    </div>
+
+    <style>
+      /* Page Loading Progress Bar */
+      .page-loading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+        z-index: 9999;
+        transition: width 0.2s ease-out, opacity 0.3s ease;
+        box-shadow: 0 0 10px color-mix(in srgb, var(--color-primary) 50%, transparent);
+        pointer-events: none;
+      }
+
+      .page-loading-progress.loading {
+        width: 70%;
+        animation: loading-pulse 1.5s ease-in-out infinite;
+      }
+
+      .page-loading-progress.complete {
+        width: 100%;
+        opacity: 0;
+      }
+
+      @keyframes loading-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+
+      :root[data-hide-scrollbars="true"],
+      body[data-hide-scrollbars="true"],
+      body[data-hide-scrollbars="true"] * {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      :root[data-hide-scrollbars="true"]::-webkit-scrollbar,
+      body[data-hide-scrollbars="true"]::-webkit-scrollbar,
+      body[data-hide-scrollbars="true"] *::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;
+      }
+
+      .ui-float-right {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 200;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        opacity: 0;
+        transform: translateX(20px);
+        transition: transform var(--transition-base), opacity var(--transition-base);
+        pointer-events: none;
+      }
+
+      .ui-float-right.visible {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
+      .theme-toggle, .back-to-top {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        color: var(--color-text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-md);
+        transition: all var(--transition-base);
+      }
+
+      .theme-toggle:hover, .back-to-top:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .back-to-top {
+        background: var(--color-secondary);
+        color: var(--color-bg);
+        border: none;
+      }
+
+      .home-return-hint-layer {
+        position: fixed;
+        right: calc(2rem + 44px + 0.85rem);
+        bottom: 2rem;
+        z-index: 199;
+        pointer-events: none;
+      }
+
+      .home-return-hint {
+        max-width: min(28rem, calc(100vw - 8rem));
+        opacity: 0;
+        transform: translate3d(18px, 0, 0) scale(0.96);
+        padding: 0.78rem 1rem;
+        border: 1px solid color-mix(in srgb, var(--color-secondary) 30%, var(--color-border));
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--color-surface) 92%, white 8%);
+        color: var(--color-text);
+        box-shadow: var(--shadow-md);
+        font-size: 0.84rem;
+        line-height: 1.35;
+        white-space: nowrap;
+        overflow: hidden;
+        cursor: pointer;
+        transition:
+          opacity 0.26s ease,
+          transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+          filter 0.26s ease,
+          box-shadow var(--transition-fast),
+          border-color var(--transition-fast);
+        filter: blur(2px);
+      }
+
+      .home-return-hint-layer.visible {
+        pointer-events: auto;
+      }
+
+      .home-return-hint-layer.visible .home-return-hint {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+        filter: blur(0);
+      }
+
+      .home-return-hint-layer.hiding .home-return-hint {
+        opacity: 0;
+        transform: translate3d(12px, 0, 0) scale(0.985);
+        filter: blur(1px);
+      }
+
+      .home-return-hint:hover {
+        box-shadow: var(--shadow-lg);
+        border-color: color-mix(in srgb, var(--color-secondary) 55%, var(--color-border));
+      }
+
+      .icon-moon { display: none; }
+      [data-theme^="dark"] .icon-sun { display: none; }
+      [data-theme^="dark"] .icon-moon { display: block; }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) .icon-sun { display: none; }
+        :root:not([data-theme]) .icon-moon { display: block; }
+      }
+
+      .theme-panel {
+        visibility: hidden;
+        position: fixed;
+        inset: auto;
+        margin: 0;
+        bottom: calc(2rem + 108px);
+        right: 2rem;
+        color: var(--color-text);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 1rem;
+        width: 300px;
+        max-width: calc(100vw - 2rem);
+        max-height: calc(100dvh - 10rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        box-shadow: var(--shadow-lg);
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+        transition: opacity var(--transition-fast), transform var(--transition-fast);
+      }
+
+      .theme-panel:popover-open {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      @starting-style {
+        .theme-panel:popover-open {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+      }
+
+      .theme-section {
+        margin-bottom: 0.75rem;
+      }
+
+      .theme-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .theme-label {
+        display: block;
+        font-size: 0.7rem;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+      }
+
+      .theme-modes {
+        display: flex;
+        gap: 0.25rem;
+      }
+
+      .mode-btn {
+        flex: 1;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.75rem;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        background: transparent;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        font-family: inherit;
+      }
+
+      .mode-btn:hover {
+        border-color: var(--color-secondary);
+        color: var(--color-text);
+      }
+
+      .mode-btn.active,
+      .mode-btn[aria-checked="true"] {
+        background: var(--color-secondary);
+        color: var(--color-bg);
+        border-color: var(--color-secondary);
+      }
+
+      .theme-palettes {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+      }
+
+      .palette-btn {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        align-items: stretch;
+        min-height: 66px;
+        border-radius: var(--radius-sm);
+        border: 2px solid transparent;
+        background: var(--color-bg);
+        color: var(--color-text);
+        cursor: pointer;
+        padding: 7px;
+        transition: all var(--transition-fast);
+      }
+
+      .palette-btn:hover {
+        border-color: var(--color-border);
+      }
+
+      .palette-btn.active {
+        border-color: var(--color-primary);
+        background: var(--color-tag-bg);
+      }
+
+      .palette-preview {
+        display: flex;
+        width: 100%;
+        height: 22px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .palette-preview span { flex: 1; }
+      .palette-preview span:first-child { flex: 2; }
+      .palette-name { font-size: 0.7rem; line-height: 1.4; }
+
+      @media (max-width: 600px) {
+        .ui-float-right {
+          bottom: 1.5rem;
+          right: 1rem;
+        }
+
+        .home-return-hint-layer {
+          right: calc(1rem + 44px + 0.7rem);
+          bottom: 1.5rem;
+        }
+
+        .home-return-hint {
+          max-width: min(70vw, 220px);
+          white-space: normal;
+        }
+      }
+      @media (max-width: 768px) {
+        .theme-panel { right: 1rem; bottom: calc(1.5rem + 108px); }
+      }
+    </style>
+
+    <script>
+  import '../scripts/site';
+</script>
+  </body>
+</html>

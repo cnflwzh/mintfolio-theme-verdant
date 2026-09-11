@@ -1,0 +1,207 @@
+---
+/**
+ * Projects - Portfolio projects grid section.
+ * 
+ * Displays project cards with:
+ * - Title and description
+ * - Technology tags
+ * - Links to source code (repo) and live demo (link)
+ * Responsive grid: 3 columns on large screens, auto-fit otherwise.
+ */
+import type { ThemeContext } from '@mintfolio/theme-api';
+import type { DefaultSettings } from '../../settings';
+
+/** Public site data supplied by the containing theme page. */
+interface Props { theme: ThemeContext<DefaultSettings>; }
+import type { Project } from '@mintfolio/theme-api';
+
+const { theme } = Astro.props;
+const { projects } = theme.site;
+---
+
+<section id="projects" class="projects-section">
+  <div class="container">
+    <h2 class="section-title gradient-text">项目作品</h2>
+    
+    <div class="projects-grid">
+      {projects.map((project: Project) => (
+        <article class="project-card glass-card">
+          <div class="card-content">
+            <h3 class="project-title">{project.title}</h3>
+            <p class="project-description">{project.description}</p>
+            
+            <div class="project-tags">
+              {project.tags.map((tag: string) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+            
+            <div class="project-links">
+              {project.repo && (
+                <a 
+                  href={project.repo} 
+                  class="project-link" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label={`查看 ${project.title} 源码`}
+                >
+                  <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                  </svg>
+                  <span>源码</span>
+                </a>
+              )}
+              {project.link && (
+                <a 
+                  href={project.link} 
+                  class="project-link" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label={`访问 ${project.title} 在线演示`}
+                >
+                  <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/>
+                    <line x1="10" y1="14" x2="21" y2="3"/>
+                  </svg>
+                  <span>演示</span>
+                </a>
+              )}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .projects-section {
+    padding: var(--section-padding, 5rem 0);
+  }
+
+  .container {
+    max-width: var(--container-max, 1200px);
+    margin: 0 auto;
+    padding: 0 var(--container-padding, 1.5rem);
+  }
+
+  .section-title {
+    font-size: var(--section-title-size, 2.5rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: var(--section-title-margin, 3rem);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
+    gap: var(--grid-gap, 1.5rem);
+  }
+
+  .project-card {
+    position: relative;
+    transition: transform var(--transition-duration, 0.3s) ease, box-shadow var(--transition-duration, 0.3s) ease;
+  }
+
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-hover-shadow, 0 20px 40px rgba(0, 0, 0, 0.2));
+  }
+
+  .card-content {
+    padding: var(--card-padding, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .project-title {
+    font-size: var(--project-title-size, 1.25rem);
+    font-weight: 600;
+    color: var(--text-primary, #ffffff);
+    margin-bottom: 0.75rem;
+  }
+
+  .project-description {
+    font-size: var(--project-desc-size, 0.95rem);
+    color: var(--text-secondary, rgba(255, 255, 255, 0.75));
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: var(--tag-size, 0.75rem);
+    font-weight: 500;
+    color: var(--tag-color, rgba(255, 255, 255, 0.9));
+    background: var(--tag-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--tag-border, rgba(255, 255, 255, 0.15));
+    border-radius: var(--tag-radius, 9999px);
+    transition: background var(--transition-duration, 0.2s) ease;
+  }
+
+  .tag:hover {
+    background: var(--tag-bg-hover, rgba(255, 255, 255, 0.2));
+  }
+
+  .project-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--link-size, 0.875rem);
+    font-weight: 500;
+    color: var(--link-color, rgba(255, 255, 255, 0.8));
+    text-decoration: none;
+    transition: color var(--transition-duration, 0.2s) ease;
+  }
+
+  .project-link:hover {
+    color: var(--link-color-hover, #ffffff);
+  }
+
+  .link-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    flex-shrink: 0;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .projects-section {
+      padding: var(--section-padding-mobile, 3rem 0);
+    }
+
+    .section-title {
+      font-size: var(--section-title-size-mobile, 2rem);
+      margin-bottom: var(--section-title-margin-mobile, 2rem);
+    }
+
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .projects-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
