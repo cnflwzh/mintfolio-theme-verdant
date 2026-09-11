@@ -11,7 +11,7 @@ export default defineTheme({
   manifest: {
     id: 'default',
     name: 'Mintfolio Default',
-    version: '0.1.0',
+    version: '0.1.1',
     author: 'Mintfolio contributors',
     description: 'Portfolio hero, article cards, reading tools, and eight visitor-selectable palettes.',
     engine: '^1.0.0',

@@ -1,6 +1,6 @@
 {
   "name": "@mintfolio/theme-default",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Mintfolio's portfolio theme with cards, reading tools and eight palettes",
   "type": "module",
   "files": [
@@ -14,13 +14,19 @@
     "styles",
     "lib",
     "assets",
+    "config",
     "README.md"
   ],
   "exports": {
-    "./theme": "./theme.mjs"
+    "./theme": "./theme.mjs",
+    "./settings": "./settings.ts",
+    "./config": "./config/theme-default.config.mjs"
+  },
+  "mintfolio": {
+    "configTemplate": "./config/theme-default.config.mjs"
   },
   "peerDependencies": {
-    "@mintfolio/core": "^0.1.0",
+    "@mintfolio/core": "^0.1.1",
     "astro": "^7.3.2"
   },
   "dependencies": {
@@ -35,7 +41,7 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "@astrojs/check": "^0.9.10",
-    "@mintfolio/core": "^0.1.0",
+    "@mintfolio/core": "^0.1.1",
     "astro": "^7.3.2",
     "@types/node": "^22.20.2",
     "@types/react": "^19.3.0",

@@ -2,25 +2,26 @@
 
 Mintfolio 的完整视觉主题，包含个人主页、侧栏、文章卡片、八套配色、明暗模式和阅读工具。此包独立于 Core 安装；只有选择本主题时，Core 才加载它声明的 React/Tailwind 构建工具。
 
-当前包已支持 tarball 安装，尚未发布到公共 registry。发布后在已初始化的 Core 站点安装：
+当前包可通过本地 registry 或 tarball 安装，尚未发布到公共 registry。Core >= 0.1.1 的站点推荐使用以下命令，一次完成安装与配置生成：
 
 ```sh
-npm install @mintfolio/theme-default
+npx mintfolio theme:add default
 ```
 
 ```js
 // theme.config.mjs
 export default {
   theme: '@mintfolio/theme-default',
-  settings: {
-    initialMode: 'auto',
-    archivePageSize: 9,
-    sidebar: { sections: { tools: false } },
-  },
 };
 ```
 
-有效配色和所有设置以 `theme.mjs` 为准，嵌套对象自动补齐默认值，未知键和错误类型会阻止构建。访客已有的配色/明暗偏好优先于初始设置。
+站点根目录会生成 `theme-default.config.mjs`，包含全部现有设置、中文注释、8 套配色说明和数组条目示例。直接修改该文件即可；开发服务会监听并重新加载。类型来自公开的 `@mintfolio/theme-default/settings` 入口，模板本身随主题包发布。
+
+继续使用 `npm install @mintfolio/theme-default` 也可以：随后 `npm run dev` 或 `npm run build` 会自动补齐配置。需要立即生成时运行 `npx mintfolio theme:init default`。这套流程由 Core 执行，不依赖 npm 是否允许依赖包的 postinstall 脚本。
+
+配置文件只在第一次创建，重复安装、同步、启动或升级都不会覆盖已有内容。以后新增的配置项仍会使用清单默认值，可对照包内 `config/theme-default.config.mjs` 手动补充。
+
+设置优先级为：主题清单默认值 → `theme-default.config.mjs` → `theme.config.mjs` 中旧的内联 `settings`。嵌套对象递归合并，数组整组替换。建议把显示设置集中在专属文件中；未知键和错误类型会阻止构建。访客已有的配色/明暗偏好优先于初始设置。
 
 站点标题、个人资料、文章与项目属于站点的 `site.config.ts`/`content/blog`。侧栏、推荐文章显示方式、文章尾图和可选 `analyticsId` 属于此主题的 `settings`，主题包不导入宿主配置。
 
