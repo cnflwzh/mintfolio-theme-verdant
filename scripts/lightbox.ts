@@ -1,6 +1,6 @@
 import { createLightboxController, type PageScope } from '@mintfolio/core/client';
 
-/** Default provides its controls; all preview behavior comes from Core. */
+/** Verdant provides its controls; all preview behavior comes from Core. */
 export function initLightbox(root: HTMLElement, scope: PageScope): void {
   const dialog = document.querySelector<HTMLDialogElement>('#image-lightbox');
   const image = document.querySelector<HTMLImageElement>('#lightbox-image');

@@ -9,10 +9,10 @@
  * - Social media links (GitHub, Twitter, Email with icon support)
  */
 import type { ThemeContext } from '@mintfolio/theme-api';
-import type { DefaultSettings } from '../../settings';
+import type { VerdantSettings } from '../../settings';
 
 /** Public site data supplied by the containing theme page. */
-interface Props { theme: ThemeContext<DefaultSettings>; }
+interface Props { theme: ThemeContext<VerdantSettings>; }
 import Image from '@mintfolio/core/components/Image.astro';
 
 const { theme } = Astro.props;

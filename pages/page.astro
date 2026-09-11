@@ -10,9 +10,9 @@
  */
 import Base from '../layouts/Base.astro';
 import type { PageProps, StaticPageData } from '@mintfolio/theme-api/astro';
-import type { DefaultSettings } from '../settings';
+import type { VerdantSettings } from '../settings';
 
-interface Props extends PageProps<DefaultSettings, StaticPageData> {}
+interface Props extends PageProps<VerdantSettings, StaticPageData> {}
 import Image from '@mintfolio/core/components/Image.astro';
 
 const { theme, page } = Astro.props;

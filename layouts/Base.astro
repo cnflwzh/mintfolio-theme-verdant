@@ -1,6 +1,6 @@
 ---
 /**
- * Base - Default Theme document layout.
+ * Base - Verdant Theme document layout.
  * 
  * Provides the shared page structure including:
  * - HTML head with meta tags, favicon, and Google Analytics
@@ -21,12 +21,12 @@ import '../styles/themes/happyhues/index.css';
 
 import SeoHead from '@mintfolio/theme-api/SeoHead.astro';
 import type { PageProps } from '@mintfolio/theme-api/astro';
-import type { DefaultSettings } from '../settings';
+import type { VerdantSettings } from '../settings';
 import faviconSvg from '../assets/favicon.svg?url';
 import faviconIco from '../assets/favicon.ico?url';
 
-/** Owns the Default Theme document only; other themes provide their own layout. */
-interface Props extends PageProps<DefaultSettings> {}
+/** Owns the Verdant Theme document only; other themes provide their own layout. */
+interface Props extends PageProps<VerdantSettings> {}
 const { theme, page } = Astro.props;
 ---
 

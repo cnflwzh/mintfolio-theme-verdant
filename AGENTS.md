@@ -1,4 +1,4 @@
-# MintfolioThemeDefault
+# MintfolioThemeVerdant
 
 完整视觉主题。pages、layouts、components、styles、assets 和 scripts 只属于本主题。scripts 使用 Core 控制器适配自己的 DOM。不得加入内容读取、路由或加密实现。
 

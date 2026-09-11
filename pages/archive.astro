@@ -1,11 +1,11 @@
 ---
-/** Default archive keeps filter state in the Core-owned query-string URLs. */
+/** Verdant archive keeps filter state in the Core-owned query-string URLs. */
 import PostCard from '../components/blog/PostCard.astro';
 import Base from '../layouts/Base.astro';
 import type { PageProps, ListPageData } from '@mintfolio/theme-api/astro';
-import type { DefaultSettings } from '../settings';
+import type { VerdantSettings } from '../settings';
 
-interface Props extends PageProps<DefaultSettings, ListPageData> {}
+interface Props extends PageProps<VerdantSettings, ListPageData> {}
 const { theme, page } = Astro.props;
 const posts = page.posts;
 const BLOG_PAGE_SIZE = theme.settings.archivePageSize;

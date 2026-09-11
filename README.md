@@ -15,13 +15,13 @@ mintfolio theme install verdant --use
 mintfolio dev
 ~~~
 
-项目仍在持续开发中。verdant 别名需要 Core >= 0.1.5。
+项目仍在持续开发中。verdant 别名需要 Core >= 0.2.0。
 
-Verdant 沿用 @mintfolio/theme-default 包名，清单 id 仍为 default，配置文件仍叫 theme-default.config.mjs。原有的 default、happyhues 与完整包名继续可用。
+Verdant 的 npm 包名是 @mintfolio/theme-verdant，清单 id 为 verdant，配置文件是 theme-verdant.config.mjs。命令行可使用 verdant 简写。
 
 ## 调整主题
 
-站点根目录的 theme-default.config.mjs 是显示设置入口。它会自动生成，重复初始化或升级会保留你的修改。
+站点根目录的 theme-verdant.config.mjs 是显示设置入口。它会自动生成，重复初始化或升级会保留你的修改。
 
 ~~~js
 export default {
@@ -37,7 +37,7 @@ export default {
 
 initialPalette 使用字符串 '1' 到 '8'。访客在浏览器中保存的配色偏好优先于初始值。网站标题、头像和项目内容放在 site.config.ts；侧栏、推荐文章和文末插图放在主题设置中。
 
-全部选项见 [配置模板](config/theme-default.config.mjs) 与 [主题配置教程](https://github.com/cnflwzh/mintfolio/wiki/Themes)。设置合并顺序为清单默认值、独立主题文件、旧内联 settings；数组整体替换。
+全部选项见 [配置模板](config/theme-verdant.config.mjs) 与 [主题配置教程](https://github.com/cnflwzh/mintfolio/wiki/Themes)。设置合并顺序为清单默认值、独立主题文件、旧内联 settings；数组整体替换。
 
 ## 页面与资源
 
