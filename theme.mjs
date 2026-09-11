@@ -9,9 +9,9 @@ const flag = (label, value) => ({ type: 'boolean', label, default: value });
 /** All layout, typography, cards, reading tools, and palette controls belong to this theme. */
 export default defineTheme({
   manifest: {
-    id: 'default',
+    id: 'verdant',
     name: 'Verdant',
-    version: '0.1.2',
+    version: '0.2.0',
     author: 'Mintfolio contributors',
     description: 'Portfolio hero, article cards, reading tools, and eight visitor-selectable palettes.',
     engine: '^1.0.0',

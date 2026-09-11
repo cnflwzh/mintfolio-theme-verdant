@@ -1,7 +1,7 @@
 import type { PublicImage } from '@mintfolio/theme-api';
 
-/** Default Theme settings, fully populated and validated by its own manifest. */
-export interface DefaultSettings extends Record<string, unknown> {
+/** Verdant Theme settings, fully populated and validated by its own manifest. */
+export interface VerdantSettings extends Record<string, unknown> {
   /** Visitor choices in localStorage take precedence over these initial appearance values. */
   initialMode: 'auto' | 'light' | 'dark';
   initialPalette: string;
@@ -9,7 +9,7 @@ export interface DefaultSettings extends Record<string, unknown> {
   homePageSize: number;
   archivePageSize: number;
   analyticsId: string;
-  /** Optional sidebar presentation; Core contains no Default-specific configuration. */
+  /** Optional sidebar presentation; Core contains no Verdant-specific configuration. */
   sidebar: {
     sections: { contact: boolean; activity: boolean; tools: boolean };
     tools: Array<{ name: string; description: string; url: string }>;

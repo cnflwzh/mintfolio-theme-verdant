@@ -1,14 +1,14 @@
 ---
-/** Default article layout receives rendered body or an opaque encrypted payload. */
+/** Verdant article layout receives rendered body or an opaque encrypted payload. */
 import Base from '../layouts/Base.astro';
 import ArticleProse from '../components/blog/ArticleProse.astro';
 import CodeBlockEnhancer from '../components/blog/CodeBlockEnhancer.astro';
 import ProtectedArticle from '../components/blog/ProtectedArticle.astro';
 import Image from '@mintfolio/core/components/Image.astro';
 import type { PageProps, PostPageData } from '@mintfolio/theme-api/astro';
-import type { DefaultSettings } from '../settings';
+import type { VerdantSettings } from '../settings';
 
-interface Props extends PageProps<DefaultSettings, PostPageData> {}
+interface Props extends PageProps<VerdantSettings, PostPageData> {}
 const { theme, page } = Astro.props;
 const { post, body } = page;
 const tocHeadings = body.kind === 'public' ? body.headings.filter((heading) => heading.depth === 2 || heading.depth === 3) : [];

@@ -1,7 +1,7 @@
 import type { ArticleHeading } from '@mintfolio/theme-api/astro';
 
 /**
- * Rebuild the Default Theme's TOC from authenticated headings after unlocking.
+ * Rebuild the Verdant Theme's TOC from authenticated headings after unlocking.
  * The template contains no article metadata. Cloning its empty link preserves
  * Astro's scoped CSS attributes; textContent keeps heading labels inert.
  */

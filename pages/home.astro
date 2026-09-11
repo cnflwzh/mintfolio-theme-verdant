@@ -1,12 +1,12 @@
 ---
-/** Default home renderer consumes only public site, post, and taxonomy data. */
+/** Verdant home renderer consumes only public site, post, and taxonomy data. */
 import PostCard from '../components/blog/PostCard.astro';
 import Base from '../layouts/Base.astro';
 import Image from '@mintfolio/core/components/Image.astro';
 import type { PageProps, HomePageData } from '@mintfolio/theme-api/astro';
-import type { DefaultSettings } from '../settings';
+import type { VerdantSettings } from '../settings';
 
-interface Props extends PageProps<DefaultSettings, HomePageData> {}
+interface Props extends PageProps<VerdantSettings, HomePageData> {}
 const { theme, page } = Astro.props;
 const posts = page.posts;
 const HOME_PAGE_SIZE = theme.settings.homePageSize;

@@ -1,12 +1,12 @@
 /**
- * Mintfolio Default 主题设置。
- * 在 theme.config.mjs 中选择 @mintfolio/theme-default 后，本文件自动生效。
+ * Mintfolio Verdant 主题设置。
+ * 在 theme.config.mjs 中选择 @mintfolio/theme-verdant 后，本文件自动生效。
  * 修改后保存即可；开发服务会重新加载配置。重复安装或生成不会覆盖本文件。
  * 网站名称、域名、个人资料、社交链接与项目仍在 site.config.ts 中设置。
  * 如果 theme.config.mjs 还包含旧的 settings，同名设置以旧的内联值为准。
  */
 
-/** @satisfies {import('@mintfolio/theme-default/settings').DefaultSettings} */
+/** @satisfies {import('@mintfolio/theme-verdant/settings').VerdantSettings} */
 export default {
   // 初始明暗模式：'auto' 跟随系统、'light' 浅色、'dark' 深色。
   // 访客通过主题面板保存过的个人偏好，会优先于这里的初始设置。

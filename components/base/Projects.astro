@@ -9,10 +9,10 @@
  * Responsive grid: 3 columns on large screens, auto-fit otherwise.
  */
 import type { ThemeContext } from '@mintfolio/theme-api';
-import type { DefaultSettings } from '../../settings';
+import type { VerdantSettings } from '../../settings';
 
 /** Public site data supplied by the containing theme page. */
-interface Props { theme: ThemeContext<DefaultSettings>; }
+interface Props { theme: ThemeContext<VerdantSettings>; }
 import type { Project } from '@mintfolio/theme-api';
 
 const { theme } = Astro.props;
