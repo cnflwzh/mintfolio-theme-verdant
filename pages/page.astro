@@ -1,14 +1,7 @@
 ---
-/**
- * About page - Personal introduction and profile details.
- *
- * Displays extended profile information including:
- * - Avatar and basic info
- * - Bio/introduction sections
- * - Social links with platform icons
- * - Skills breakdown
- */
+/** Render Core-provided page content; the built-in about page retains the profile layout. */
 import Base from '../layouts/Base.astro';
+import { formatSiteDate } from '../utils/dates';
 import type { PageProps, StaticPageData } from '@mintfolio/theme-api/astro';
 import type { VerdantSettings } from '../settings';
 
@@ -35,10 +28,19 @@ const profileAvatar = theme.site.profile.avatar;
         <a href={theme.urls.home()} class="back-btn" aria-label="返回首页">← 返回首页</a>
       </nav>
 
+      {page.body ? (
+        <>
+          <header class="about-header content-header">
+            <div><h1 class="title">{page.title}</h1><p class="subtitle">{page.description}</p></div>
+          </header>
+          <article class="card page-prose" set:html={page.body.html} />
+        </>
+      ) : page.id === 'about' && (
+        <>
       <header class="about-header">
         <Image src={profileAvatar} alt={`${theme.site.profile.name}的头像`} class="avatar" width={84} height={84} />
         <div>
-          <h1 class="title">关于我</h1>
+          <h1 class="title">{page.title}</h1>
           <p class="subtitle">{theme.site.profile.name} · 📍{theme.site.profile.location}</p>
         </div>
       </header>
@@ -105,8 +107,11 @@ const profileAvatar = theme.site.profile.avatar;
         </div>
       </section>
 
+        </>
+      )}
+
       <footer class="footer">
-        <p>© {new Date().getFullYear()} {theme.site.profile.name}</p>
+        <p>© {formatSiteDate(new Date(), theme.site.language, theme.site.blog?.timezone, { year: 'numeric' })} {theme.site.profile.name}</p>
         <p class="site-links">
           <a href={theme.urls.rss()} target="_blank" rel="noopener noreferrer">RSS 订阅</a>
           <span>·</span>
@@ -123,6 +128,18 @@ const profileAvatar = theme.site.profile.avatar;
 </Base>
 
 <style>
+  .about-header.content-header { grid-template-columns: 1fr; }
+  .page-prose { line-height: 1.8; color: var(--color-text); overflow-wrap: anywhere; }
+  .page-prose :global(p) { margin-block: 1em; }
+  .page-prose :global(h2), .page-prose :global(h3), .page-prose :global(h4) { color: var(--color-text-headline); margin-block: 1.8em .7em; line-height: 1.4; }
+  .page-prose :global(a) { color: var(--color-secondary); text-decoration: underline; text-underline-offset: .2em; }
+  .page-prose :global(img) { max-width: 100%; height: auto; border-radius: var(--radius-md); }
+  .page-prose :global(pre) { overflow: auto; padding: 1rem; background: var(--color-bg-alt); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .page-prose :global(ul), .page-prose :global(ol) { padding-inline-start: 1.5rem; margin-block: 1rem; }
+  .page-prose :global(blockquote) { margin-inline: 0; padding-inline-start: 1rem; border-inline-start: 3px solid var(--color-primary); color: var(--color-text-muted); }
+  .page-prose :global(table) { display: block; overflow-x: auto; border-collapse: collapse; }
+  .page-prose :global([data-mintfolio-table-scroll] > table) { display: table; width: 100%; overflow: visible; }
+  .page-prose :global(th), .page-prose :global(td) { border: 1px solid var(--color-border); padding: .5rem .75rem; }
   .about-page {
     min-height: 100vh;
     padding: 2rem 1.5rem 4rem;

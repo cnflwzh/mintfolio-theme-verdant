@@ -2,6 +2,8 @@
 /** Verdant home renderer consumes only public site, post, and taxonomy data. */
 import PostCard from '../components/blog/PostCard.astro';
 import Base from '../layouts/Base.astro';
+import { formatSiteDate } from '../utils/dates';
+import { resolveThemeUrl } from '../utils/themeUrls';
 import Image from '@mintfolio/core/components/Image.astro';
 import type { PageProps, HomePageData } from '@mintfolio/theme-api/astro';
 import type { VerdantSettings } from '../settings';
@@ -18,7 +20,7 @@ const [allTags, allCategories] = await Promise.all([theme.taxonomy.tags(), theme
 const hotContentPosts = theme.settings.home.hotContent.items
   .map((item) => {
     const post = posts.find((entry) => entry.id === item.postId);
-    return post ? { post, image: item.image } : null;
+    return post ? { post, image: resolveThemeUrl(item.image) } : null;
   })
   .filter((entry): entry is NonNullable<typeof entry> => entry !== null)
   .slice(0, 3);
@@ -52,7 +54,7 @@ const hotContentPosts = theme.settings.home.hotContent.items
             <span class="hero-location">{theme.site.profile.location}</span>
             {latestPost && (
               <span class="hero-update">
-                最近更新 {new Date(latestPost.publishedAt).toLocaleDateString('zh-CN', { year: 'numeric', month: 'numeric', day: 'numeric' })}
+                最近更新 <time datetime={latestPost.publishedAt}>{formatSiteDate(latestPost.publishedAt, theme.site.language, theme.site.blog?.timezone)}</time>
               </span>
             )}
           </div>
@@ -213,7 +215,7 @@ const hotContentPosts = theme.settings.home.hotContent.items
                       <p class="activity-text">
                         <a class="activity-link" href={post.url} data-article-link>{post.title}</a>
                       </p>
-                      <time class="activity-time">{new Date(post.publishedAt).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}</time>
+                      <time class="activity-time" datetime={post.publishedAt}>{formatSiteDate(post.publishedAt, theme.site.language, theme.site.blog?.timezone)}</time>
                     </div>
                   </div>
                 ))}
@@ -226,7 +228,7 @@ const hotContentPosts = theme.settings.home.hotContent.items
               <h3 class="sidebar-section-title">推荐工具</h3>
               <div class="tools-list">
                 {theme.settings.sidebar.tools.map((tool) => (
-                  <a href={tool.url} target="_blank" rel="noopener noreferrer" class="tool-item">
+                  <a href={resolveThemeUrl(tool.url)} target="_blank" rel="noopener noreferrer" class="tool-item">
                     <span class="tool-name">{tool.name}</span>
                     <span class="tool-desc">{tool.description}</span>
                   </a>
@@ -329,7 +331,7 @@ const hotContentPosts = theme.settings.home.hotContent.items
 
         <div id="posts-list" class="posts-list" data-page-size={HOME_PAGE_SIZE}>
           {posts.map((post, index) => (
-          <PostCard post={post} index={index} pageSize={HOME_PAGE_SIZE} variant="home" />
+          <PostCard post={post} index={index} pageSize={HOME_PAGE_SIZE} variant="home" language={theme.site.language} timezone={theme.site.blog?.timezone} />
         ))}
         </div>
 
@@ -347,7 +349,7 @@ const hotContentPosts = theme.settings.home.hotContent.items
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-content">
-      <p class="copyright">© {new Date().getFullYear()} {theme.site.profile.name}. Built with Astro.</p>
+      <p class="copyright">© {formatSiteDate(new Date(), theme.site.language, theme.site.blog?.timezone, { year: 'numeric' })} {theme.site.profile.name}. Built with Astro.</p>
       <p class="site-links">
         <a href={theme.urls.rss()} target="_blank" rel="noopener noreferrer">RSS 订阅</a>
         <span>·</span>

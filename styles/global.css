@@ -102,6 +102,21 @@ textarea {
   }
 }
 
+/* Horizontal reading regions remain discoverable even when page scrollbars are hidden. */
+body :is(.article-prose, .page-prose) :is(pre, [data-mintfolio-table-scroll], .table-scroll-wrap) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) transparent;
+  -ms-overflow-style: auto;
+}
+body :is(.article-prose, .page-prose) :is(pre, [data-mintfolio-table-scroll], .table-scroll-wrap)::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+  height: 8px;
+}
+body :is(.article-prose, .page-prose) :is(pre, [data-mintfolio-table-scroll], .table-scroll-wrap)::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+}
 /* ===== 焦点可见样式 ===== */
 :focus-visible {
   outline: 3px solid var(--color-primary);

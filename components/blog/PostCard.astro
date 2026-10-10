@@ -2,6 +2,7 @@
 import Image from '@mintfolio/core/components/Image.astro';
 import type { PostSummary } from '@mintfolio/theme-api';
 import { createSearchEntry } from '@mintfolio/theme-api/search';
+import { formatSiteDate } from '../../utils/dates';
 
 interface Props {
   /** Core-projected metadata; includes no password or protected plaintext. */
@@ -9,12 +10,14 @@ interface Props {
   index: number;
   pageSize: number;
   variant: 'home' | 'blog';
+  language: string;
+  timezone?: string;
 }
 
-const { post, index, pageSize, variant } = Astro.props;
+const { post, index, pageSize, variant, language, timezone } = Astro.props;
 const Heading = variant === 'home' ? 'h3' : 'h2';
 const search = createSearchEntry(post);
-const publishedAt = new Date(post.publishedAt);
+const publishedAt = formatSiteDate(post.publishedAt, language, timezone);
 ---
 
 <article
@@ -36,7 +39,7 @@ const publishedAt = new Date(post.publishedAt);
     <div class="post-content">
       <div class="post-meta">
         <span class="post-category">{post.category.label}</span>
-        <time class="post-date" datetime={post.publishedAt}>{publishedAt.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+        <time class="post-date" datetime={post.publishedAt}>{publishedAt}</time>
       </div>
       <Heading class="post-title">{post.protected && <span class="post-lock" aria-label="加密文章">🔒 </span>}{post.title}</Heading>
       <p class="post-description">{post.description}</p>
