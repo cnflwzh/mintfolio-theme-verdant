@@ -1,6 +1,6 @@
 {
   "name": "@mintfolio/theme-verdant",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Verdant, a Mintfolio theme for personal homepages and quiet reading.",
   "type": "module",
   "files": [
@@ -29,11 +29,11 @@
     "configTemplate": "./config/theme-verdant.config.mjs"
   },
   "peerDependencies": {
-    "@mintfolio/core": "^0.2.0",
+    "@mintfolio/core": "^0.3.0",
     "astro": "^7.3.2"
   },
   "dependencies": {
-    "@mintfolio/theme-api": "^1.0.0",
+    "@mintfolio/theme-api": "^1.1.0",
     "@astrojs/react": "^6.0.5",
     "@tailwindcss/vite": "^4.3.3",
     "tailwindcss": "^4.3.3",
@@ -44,7 +44,7 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "@astrojs/check": "^0.9.10",
-    "@mintfolio/core": "^0.2.0",
+    "@mintfolio/core": "^0.3.0",
     "astro": "^7.3.2",
     "@types/node": "^22.20.2",
     "@types/react": "^19.3.0",
@@ -59,10 +59,10 @@
   "author": "CNFLWZH",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cnflwzh/mintfolio-theme-verdant.git"
+    "url": "git+https://github.com/MintfolioBlog/mintfolio-theme-verdant.git"
   },
-  "homepage": "https://github.com/cnflwzh/mintfolio-theme-verdant#readme",
+  "homepage": "https://github.com/MintfolioBlog/mintfolio-theme-verdant#readme",
   "bugs": {
-    "url": "https://github.com/cnflwzh/mintfolio-theme-verdant/issues"
+    "url": "https://github.com/MintfolioBlog/mintfolio-theme-verdant/issues"
   }
 }
