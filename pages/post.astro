@@ -1,6 +1,9 @@
 ---
 /** Verdant article layout receives rendered body or an opaque encrypted payload. */
+import PostMeta from '@mintfolio/core/components/PostMeta.astro';
+import ArticleLinks from '@mintfolio/core/components/ArticleLinks.astro';
 import Base from '../layouts/Base.astro';
+import { resolveThemeUrl } from '../utils/themeUrls';
 import ArticleProse from '../components/blog/ArticleProse.astro';
 import CodeBlockEnhancer from '../components/blog/CodeBlockEnhancer.astro';
 import ProtectedArticle from '../components/blog/ProtectedArticle.astro';
@@ -13,12 +16,8 @@ const { theme, page } = Astro.props;
 const { post, body } = page;
 const tocHeadings = body.kind === 'public' ? body.headings.filter((heading) => heading.depth === 2 || heading.depth === 3) : [];
 const profileAvatar = theme.site.profile.avatar;
-const footerImage = theme.settings.article.footerImage.src || theme.site.profile.avatar;
+const footerImage = resolveThemeUrl(theme.settings.article.footerImage.src) || theme.site.profile.avatar;
 
-/** Format the Core-provided ISO publication date without changing its timezone. */
-function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
-}
 ---
 
 <Base theme={theme} page={page}>
@@ -42,9 +41,7 @@ function formatDate(date: Date): string {
 
         <h1 class="gradient-text post-title" transition:name={`post-title-${post.id}`}>{post.title}</h1>
         <div class="post-meta">
-          <time class="post-date" datetime={new Date(post.publishedAt).toISOString()}>
-            {formatDate(new Date(post.publishedAt))}
-          </time>
+          <PostMeta post={post} language={theme.site.language} timezone={theme.site.blog?.timezone} />
           {post.tags && post.tags.length > 0 && (
             <div class="post-tags">
               {post.tags.map(tag => (
@@ -134,6 +131,7 @@ function formatDate(date: Date): string {
       )}
 
       <CodeBlockEnhancer />
+      <ArticleLinks page={page} />
 
 {theme.settings.article.footerImage.enabled && (
   <div class="post-footer-image glass-card">

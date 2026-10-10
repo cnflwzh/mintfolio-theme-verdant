@@ -4,7 +4,7 @@
  * 
  * Provides styled prose container for Markdown-rendered blog content with:
  * - Typography styles for headings, paragraphs, lists, code blocks
- * - Table wrapping for horizontal scroll on narrow viewports
+ * - Styles Core-rendered, keyboard-accessible table scroll regions without JavaScript
  * - Responsive padding adjustments for mobile devices
  */
 ---
@@ -16,6 +16,8 @@
 <style>
   .post-content.article-prose {
     padding: 2rem;
+    min-width: 0;
+    overflow-wrap: anywhere;
     line-height: 1.85;
     border-radius: var(--radius-lg);
     background: var(--color-surface);
@@ -146,8 +148,11 @@
     margin: 2rem 0;
   }
 
-  .post-content.article-prose :global(.table-scroll-wrap) {
+  .post-content.article-prose :global(.table-scroll-wrap),
+  .post-content.article-prose :global([data-mintfolio-table-scroll]) {
     margin: 1.5rem 0;
+    max-width: 100%;
+    min-width: 0;
     overflow-x: auto;
     border: 1px solid color-mix(in srgb, var(--color-border) 85%, transparent);
     border-radius: var(--radius-md);
