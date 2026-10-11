@@ -12,7 +12,7 @@ const { postId, payload } = body;
 
   <section class="protected-post" data-protected-post data-post-id={postId} data-state="locked">
     <div class="password-gate">
-      <span class="gate-icon" aria-hidden="true">🔒</span>
+      <span class="gate-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
       <p class="gate-eyebrow">PRIVATE NOTE</p>
       <h2>这篇文章已加密</h2>
       <p class="gate-description">输入文章密码，继续阅读。</p>
@@ -28,7 +28,7 @@ const { postId, payload } = body;
       <noscript><p>请启用 JavaScript 后输入密码解锁。</p></noscript>
     </div>
     <div class="unlocked-bar" hidden>
-      <span>🔓 文章已解锁</span>
+      <span class="unlocked-label"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>文章已解锁</span>
       <button type="button" class="lock-article">重新锁定</button>
     </div>
     <div class="protected-article-content" hidden tabindex="-1"></div>
@@ -44,10 +44,11 @@ const { postId, payload } = body;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     background: radial-gradient(ellipse at top right, var(--color-play-soft), transparent 65%), var(--color-surface);
-    box-shadow: 6px 6px 0 var(--color-primary-soft);
+    box-shadow: 6px 6px 0 var(--color-accent-soft);
     text-align: center;
   }
-  .gate-icon { display: inline-grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 1rem; background: var(--color-play-soft); font-size: 1.5rem; }
+  .gate-icon { display: inline-grid; place-items: center; width: 3.5rem; height: 3.5rem; border: 1.5px solid var(--color-text); border-radius: 1rem; background: var(--color-play); color: var(--color-text); transform: rotate(-6deg); }
+  .gate-icon svg { width: 1.6rem; height: 1.6rem; }
   .gate-eyebrow { margin-top: 1rem; color: var(--color-primary); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; }
   h2 { margin: 0.55rem 0; color: var(--color-text); font-size: clamp(1.4rem, 4vw, 1.9rem); }
   .gate-description { color: var(--color-text-muted); }
@@ -79,7 +80,10 @@ const { postId, payload } = body;
   button:disabled { opacity: 0.6; cursor: wait; }
   .password-status { min-height: 1.5em; margin-top: 0.7rem; color: var(--color-text-muted); font-size: 0.85rem; }
   .unlocked-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; color: var(--color-text-muted); font-size: 0.85rem; }
-  .lock-article { --button-bg: var(--color-primary-soft); padding: 0.45rem 0.8rem; color: var(--color-primary); }
+  .unlocked-label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--color-primary); font-weight: 600; }
+  .lock-article { --button-bg: var(--color-tag-bg); padding: 0.45rem 0.9rem; border-radius: 999px; color: var(--color-primary); }
+  /* Focus moves here after unlocking for screen readers; it is not a keyboard stop. */
+  .protected-article-content:focus { outline: none; }
   [hidden] { display: none !important; }
   @media (max-width: 420px) { .password-actions { flex-direction: column; } }
 </style>

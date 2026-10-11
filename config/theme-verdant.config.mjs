@@ -1,9 +1,8 @@
 /**
  * Mintfolio Verdant 主题设置。
- * 在 theme.config.mjs 中选择 @mintfolio/theme-verdant 后，本文件自动生效。
- * 修改后保存即可；开发服务会重新加载配置。重复安装或生成不会覆盖本文件。
+ * 切换到 Verdant 时，Core 会把下面的对象（连同注释）写入站点 theme.config.mjs 的 settings。
+ * 修改站点 settings 后保存即可；开发服务会重新加载配置。升级主题不会覆盖站点设置。
  * 网站名称、域名、个人资料、社交链接与项目仍在 site.config.ts 中设置。
- * 如果 theme.config.mjs 还包含旧的 settings，同名设置以旧的内联值为准。
  */
 
 /** @satisfies {import('@mintfolio/theme-verdant/settings').VerdantSettings} */
@@ -23,8 +22,6 @@ export default {
   // 博客归档页首次显示的文章数量，范围 1–100。
   archivePageSize: 8,
 
-  // 可选的 Google Analytics 测量 ID，例如 'G-XXXXXXXXXX'；留空不加载统计。
-  analyticsId: '',
 
   sidebar: {
     // 各侧栏区域的显示开关。联系方式和最近动态的数据由站点内容提供。

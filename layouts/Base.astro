@@ -3,7 +3,7 @@
  * Base - Verdant Theme document layout.
  * 
  * Provides the shared page structure including:
- * - HTML head with meta tags, favicon, and Google Analytics
+ * - HTML head with meta tags and favicon; analytics is injected by Core
  * - Theme preloading script to prevent flash of unstyled content
  * - Floating UI elements (theme toggle, back-to-top button, home return hint)
  * - Page loading progress bar
@@ -69,15 +69,6 @@ const { theme, page } = Astro.props;
       })();
     </script>
 
-    {theme.settings.analyticsId && <>
-      <script is:inline async src={'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(theme.settings.analyticsId)}></script>
-      <script is:inline define:vars={{ analyticsId: theme.settings.analyticsId }}>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', analyticsId);
-      </script>
-    </>}
   </head>
   <body data-hide-scrollbars="true" data-page-kind={page.kind} data-home-href={theme.urls.home()} data-archive-href={theme.urls.archive()} data-initial-mode={theme.settings.initialMode} data-initial-palette={theme.settings.initialPalette}>
     <!-- Styles are loaded here; match browser chrome before painting page content. -->

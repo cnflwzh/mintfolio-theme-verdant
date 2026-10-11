@@ -8,7 +8,6 @@ export interface VerdantSettings extends Record<string, unknown> {
   /** Number of cards initially visible before the visitor loads more. */
   homePageSize: number;
   archivePageSize: number;
-  analyticsId: string;
   /** Optional sidebar presentation; Core contains no Verdant-specific configuration. */
   sidebar: {
     sections: { contact: boolean; activity: boolean; tools: boolean };
