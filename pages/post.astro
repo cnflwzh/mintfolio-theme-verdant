@@ -1,9 +1,9 @@
 ---
 /** Verdant article layout receives rendered body or an opaque encrypted payload. */
-import PostMeta from '@mintfolio/core/components/PostMeta.astro';
 import ArticleLinks from '@mintfolio/core/components/ArticleLinks.astro';
 import Base from '../layouts/Base.astro';
 import { resolveThemeUrl } from '../utils/themeUrls';
+import { formatSiteDate } from '../utils/dates';
 import ArticleProse from '../components/blog/ArticleProse.astro';
 import CodeBlockEnhancer from '../components/blog/CodeBlockEnhancer.astro';
 import ProtectedArticle from '../components/blog/ProtectedArticle.astro';
@@ -17,6 +17,10 @@ const { post, body } = page;
 const tocHeadings = body.kind === 'public' ? body.headings.filter((heading) => heading.depth === 2 || heading.depth === 3) : [];
 const profileAvatar = theme.site.profile.avatar;
 const footerImage = resolveThemeUrl(theme.settings.article.footerImage.src) || theme.site.profile.avatar;
+const formatDate = (value: string) => formatSiteDate(value, theme.site.language, theme.site.blog?.timezone);
+// Named authors replace the site owner in the byline instead of being listed twice.
+const bylineAuthors = post.authors?.length ? post.authors : [{ id: 'profile', name: theme.site.profile.name, url: undefined }];
+const isUpdated = Boolean(post.updatedAt && post.updatedAt !== post.publishedAt);
 
 ---
 
@@ -39,24 +43,57 @@ const footerImage = resolveThemeUrl(theme.settings.article.footerImage.src) || t
           </div>
         )}
 
-        <h1 class="gradient-text post-title" transition:name={`post-title-${post.id}`}>{post.title}</h1>
-        <div class="post-meta">
-          <PostMeta post={post} language={theme.site.language} timezone={theme.site.blog?.timezone} />
-          {post.tags && post.tags.length > 0 && (
-            <div class="post-tags">
-              {post.tags.map(tag => (
-                <a href={tag.url} class="tag">{tag.label}</a>
-              ))}
-            </div>
-          )}
+        <div class="post-heading">
+          <div class="post-eyebrow">
+            <a href={post.category.url} class="post-category">{post.category.label}</a>
+            {post.pinned && <span class="post-flag">置顶</span>}
+            {post.protected && <span class="post-flag">加密</span>}
+            {post.preview && <strong class="post-flag is-preview">本地预览 · 尚未发布</strong>}
+          </div>
+          <h1 class="post-title" transition:name={`post-title-${post.id}`}>{post.title}</h1>
+          {post.description && <p class="post-lead">{post.description}</p>}
         </div>
 
-        <div class="post-author post-author-shell post-shell-card">
-          <Image class="author-avatar" src={profileAvatar} alt={theme.site.profile.name} loading="lazy" width={48} height={48} />
-          <div class="author-text">
-            <p class="author-name">{theme.site.profile.name}</p>
-            <p class="author-signature">{theme.site.profile.signature}</p>
+        {/* One ruled strip holds every fact about the article: who wrote it, then labelled figures. */}
+        <div class="post-info">
+          <div class="post-byline">
+            <Image class="byline-avatar" src={profileAvatar} alt="" loading="lazy" width={44} height={44} />
+            <div class="byline-text">
+              <span class="info-label">作者</span>
+              <p class="byline-name">
+                {bylineAuthors.map((author, index) => (
+                  <>
+                    {index > 0 && <span class="byline-sep" aria-hidden="true">、</span>}
+                    {author.url ? <a href={author.url} rel="author">{author.name}</a> : <span>{author.name}</span>}
+                  </>
+                ))}
+              </p>
+            </div>
           </div>
+          <dl class="post-stats">
+            <div class="post-stat">
+              <dt class="info-label">发布</dt>
+              <dd><time datetime={post.publishedAt}>{formatDate(post.publishedAt)}</time></dd>
+            </div>
+            {isUpdated && (
+              <div class="post-stat">
+                <dt class="info-label">更新</dt>
+                <dd><time datetime={post.updatedAt}>{formatDate(post.updatedAt!)}</time></dd>
+              </div>
+            )}
+            {post.readingMinutes !== undefined && (
+              <div class="post-stat">
+                <dt class="info-label">阅读</dt>
+                <dd>约 {post.readingMinutes} 分钟</dd>
+              </div>
+            )}
+            {post.wordCount !== undefined && (
+              <div class="post-stat">
+                <dt class="info-label">字数</dt>
+                <dd>{new Intl.NumberFormat(theme.site.language).format(post.wordCount)} 字</dd>
+              </div>
+            )}
+          </dl>
         </div>
       </header>
 
@@ -131,13 +168,35 @@ const footerImage = resolveThemeUrl(theme.settings.article.footerImage.src) || t
       )}
 
       <CodeBlockEnhancer />
+
+      {/* Tags close the article so the header keeps one focal point: the title. */}
+      {post.tags && post.tags.length > 0 && (
+        <nav class="post-tags" aria-label="文章标签">
+          {post.tags.map(tag => (
+            <a href={tag.url} class="tag">{tag.label}</a>
+          ))}
+        </nav>
+      )}
+
+      {theme.settings.article.footerImage.enabled && (
+        <div class="post-footer-image glass-card">
+          <Image src={footerImage} alt="文章结尾插图" loading="lazy" width={800} height={300} />
+        </div>
+      )}
+
+      <aside class="post-author" aria-label="关于作者">
+        <Image class="author-avatar" src={profileAvatar} alt={theme.site.profile.name} loading="lazy" width={64} height={64} />
+        <div class="author-text">
+          <p class="author-label">作者</p>
+          <p class="author-name">{theme.site.profile.name}</p>
+          {theme.site.profile.signature && <p class="author-signature">{theme.site.profile.signature}</p>}
+        </div>
+        <a href={theme.urls.page('about')} class="author-link">关于我 →</a>
+      </aside>
+
       <ArticleLinks page={page} />
 
-{theme.settings.article.footerImage.enabled && (
-  <div class="post-footer-image glass-card">
-    <Image src={footerImage} alt="文章结尾插图" loading="lazy" width={800} height={300} />
-  </div>
-)}
+
 
 <!-- Image Lightbox Modal -->
 <dialog class="image-lightbox" id="image-lightbox" aria-label="图片预览">
@@ -213,9 +272,10 @@ const footerImage = resolveThemeUrl(theme.settings.article.footerImage.src) || t
 
   .blog-post {
     min-height: 100vh;
-    padding: var(--section-padding);
-    padding-top: clamp(1rem, 2.4vw, 1.75rem);
-    background: var(--color-bg);
+    padding: clamp(1.5rem, 4vw, 3.5rem) 1.5rem 5rem;
+    background:
+      radial-gradient(60% 420px at 85% 0%, color-mix(in srgb, var(--color-play-soft) 80%, transparent), transparent 70%),
+      var(--color-bg);
   }
 
   .container {
@@ -223,49 +283,60 @@ const footerImage = resolveThemeUrl(theme.settings.article.footerImage.src) || t
     margin: 0 auto;
   }
 
+  /* Pinned to the top-left corner of the viewport at every width. */
   .breadcrumb {
     position: fixed;
-    left: max(1.5rem, calc((100vw - 800px) / 2 - 5.5rem));
-    top: clamp(1.75rem, 4vh, 2.5rem);
+    top: 2rem;
+    left: 2rem;
     z-index: 200;
   }
 
+  /* Where the side gutter is narrower than the button, start the header below it. */
+  @media (min-width: 769px) and (max-width: 1000px) {
+    .blog-post {
+      padding-top: 5.25rem;
+    }
+  }
+
   .back-btn {
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: var(--color-surface);
+    background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
     color: var(--color-text);
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-md);
-    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    transition: transform var(--transition-base), box-shadow var(--transition-base), color var(--transition-fast);
     cursor: pointer;
   }
 
   .back-btn:hover {
-    transform: scale(1.05);
+    color: var(--color-primary);
+    transform: translateX(-2px);
     box-shadow: var(--shadow-lg);
   }
 
-  .post-header {
-    margin-bottom: 1.6rem;
-    text-align: center;
+  .back-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 
-  .post-header.no-cover {
-    padding-top: 1.5rem;
+  .post-header {
+    margin-bottom: 2.5rem;
   }
 
   .post-hero-cover {
     position: relative;
     width: 100%;
-    margin: 0 auto 1.1rem;
-    border-radius: calc(var(--radius-lg) + 2px);
+    margin: 0 0 2rem;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    aspect-ratio: 16 / 7;
+    aspect-ratio: 2 / 1;
     border: 1px solid color-mix(in srgb, var(--color-border) 68%, transparent);
     box-shadow: var(--shadow-md);
   }
@@ -280,119 +351,399 @@ const footerImage = resolveThemeUrl(theme.settings.article.footerImage.src) || t
   .post-hero-cover-mask {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 35%),
-      linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0) 42%);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 40%);
     pointer-events: none;
   }
 
-  .post-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    line-height: 1.2;
+  /* ===== ARTICLE HEADER ===== */
+  .post-heading {
+    margin-bottom: 1.75rem;
   }
 
-  .post-meta {
+  .post-eyebrow {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
+    margin-bottom: 1.1rem;
   }
 
-.post-shell-card {
-  border-radius: var(--radius-lg);
-  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
-}
+  .post-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.28rem 0.8rem;
+    border-radius: 999px;
+    background: var(--color-tag-bg);
+    color: var(--color-primary);
+    font-size: 0.8rem;
+    font-weight: 650;
+    text-decoration: none;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+  }
 
-.post-author {
-  margin-top: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-}
+  .post-category::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
 
-.post-author-shell {
-  width: 100%;
-  max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
+  .post-category:hover {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+  }
 
-.author-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--color-primary);
-  flex-shrink: 0;
-}
+  .post-flag {
+    padding: 0.2rem 0.65rem;
+    border: 1px dashed color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+    border-radius: 999px;
+    color: var(--color-primary);
+    font-size: 0.74rem;
+    font-weight: 600;
+  }
 
-.author-text {
-  text-align: left;
-  line-height: 1.3;
-  flex: 1;
-}
+  .post-flag.is-preview {
+    border-style: solid;
+    border-color: transparent;
+    background: var(--color-accent-soft);
+    color: var(--color-text);
+  }
 
-.author-name {
-  font-size: 1rem;
-  color: var(--color-text);
-  font-weight: 600;
-}
+  .post-title {
+    margin-bottom: 1.1rem;
+    font-size: clamp(1.85rem, 4.2vw, 2.65rem);
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--color-text-headline);
+    text-wrap: balance;
+    /* Break CJK titles at spaces and punctuation; split words only when a run cannot fit. */
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
 
-.author-signature {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  margin-top: 0.15rem;
-}
-
-  .post-date {
+  /* The lead reads as a set-off summary, not a second title: own rule, full measure, no balancing. */
+  .post-lead {
+    padding-left: 1rem;
+    border-left: 3px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+    font-size: 1.02rem;
+    line-height: 1.8;
     color: var(--color-text-muted);
-    font-size: 0.875rem;
-    font-family: monospace;
+    text-wrap: pretty;
+  }
+
+  .post-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding: 1rem 0;
+    border-block: 1px solid var(--color-border);
+  }
+
+  .info-label {
+    display: block;
+    font: 0.66rem var(--font-mono);
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+  }
+
+  .post-byline {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .byline-avatar {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-surface);
+    box-shadow: 0 0 0 1.5px var(--color-primary);
+  }
+
+  .byline-text {
+    min-width: 0;
+  }
+
+  .byline-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 0.1rem;
+    font-size: 0.95rem;
+    font-weight: 650;
+    line-height: 1.4;
+    color: var(--color-text-headline);
+  }
+
+  .byline-name a {
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .byline-name a:hover {
+    color: var(--color-primary);
+  }
+
+  .byline-sep {
+    color: var(--color-text-muted);
+  }
+
+  .post-stats {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+
+  .post-stat {
+    padding: 0 1.15rem;
+  }
+
+  .post-stat + .post-stat {
+    border-left: 1px solid var(--color-border);
+  }
+
+  .post-stat:last-child {
+    padding-right: 0;
+  }
+
+  .post-stat dd {
+    margin: 0.15rem 0 0;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 
   .post-tags {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 0.5rem;
+    margin-top: 2rem;
   }
 
   .tag {
-    background: var(--color-tag-bg);
-    color: var(--color-tag-text);
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
     font-weight: 500;
     text-decoration: none;
-    transition: all var(--transition-fast);
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .tag::before {
+    content: '#';
+    margin-right: 0.15rem;
+    color: var(--color-primary);
+    opacity: 0.75;
   }
 
   .tag:hover {
-    background: var(--color-secondary);
-    color: var(--color-bg);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .post-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(115deg, var(--color-play-soft), var(--color-surface) 65%);
+  }
+
+  .author-avatar {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-surface);
+    box-shadow: 0 0 0 1.5px var(--color-text);
+  }
+
+  .author-text {
+    flex: 1;
+    min-width: 0;
+    line-height: 1.45;
+  }
+
+  .author-label {
+    font: 0.68rem var(--font-mono);
+    letter-spacing: 0.14em;
+    color: var(--color-text-muted);
+  }
+
+  .author-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-headline);
+  }
+
+  .author-signature {
+    margin-top: 0.1rem;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+  }
+
+  .author-link {
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    border: 1.5px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .author-link:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  /* Series, related and adjacent links come from Core with neutral styles. */
+  .blog-post :global(.mintfolio-article-links) {
+    margin-top: 2.5rem;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .blog-post :global(.mintfolio-article-links h2) {
+    margin-bottom: 0.9rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-headline);
+  }
+
+  .blog-post :global(.mintfolio-series) {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+  }
+
+  .blog-post :global(.mintfolio-series h2 a) {
+    text-decoration: none;
+  }
+
+  .blog-post :global(.mintfolio-series h2 a::before) {
+    content: '';
+    display: inline-block;
+    width: 0.55rem;
+    height: 0.55rem;
+    margin-right: 0.55rem;
+    border-radius: 2px;
+    background: var(--color-play);
+    transform: rotate(45deg);
+    vertical-align: 0.1em;
+  }
+
+  .blog-post :global(.mintfolio-series ol) {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .blog-post :global(.mintfolio-series a) {
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .blog-post :global(.mintfolio-series a:hover),
+  .blog-post :global(.mintfolio-series a[aria-current]) {
+    color: var(--color-primary);
+  }
+
+  .blog-post :global(.mintfolio-related ul) {
+    gap: 0.85rem;
+  }
+
+  .blog-post :global(.mintfolio-related li) {
+    position: relative;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    transition: border-color var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .blog-post :global(.mintfolio-related li:hover) {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .blog-post :global(.mintfolio-related a) {
+    font-weight: 650;
+    color: var(--color-text-headline);
+    text-decoration: none;
+  }
+
+  /* Stretch the title link over the whole card. */
+  .blog-post :global(.mintfolio-related a::after) {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .blog-post :global(.mintfolio-related p) {
+    margin-top: 0.3rem;
+    color: var(--color-text-muted);
+    opacity: 1;
+  }
+
+  .blog-post :global(.mintfolio-adjacent) {
+    gap: 0.85rem;
+    margin-top: 1.5rem;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .blog-post :global(.mintfolio-adjacent a) {
+    display: block;
+    height: 100%;
+    padding: 0.9rem 1.15rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .blog-post :global(.mintfolio-adjacent a:hover) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
   }
 
   .post-footer-image {
-    margin-top: 1rem;
+    margin-top: 2rem;
     overflow: hidden;
-    border-radius: var(--radius-md);
-    max-width: 520px;
-    margin-left: auto;
-    margin-right: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
   }
 
-.post-footer-image img {
-  display: block;
-  width: 100%;
-  max-height: 260px;
-  object-fit: cover;
-}
+  .post-footer-image img {
+    display: block;
+    width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+  }
 
 /* Image Lightbox */
 .image-lightbox {
@@ -552,51 +903,84 @@ const footerImage = resolveThemeUrl(theme.settings.article.footerImage.src) || t
 }
 
   @media (max-width: 768px) {
-    .blog-post {
-      padding-top: 0.6rem;
-    }
-
     .breadcrumb {
-      left: 1rem;
       top: 1rem;
+      left: 1rem;
     }
 
-    .post-title {
-      font-size: 2rem;
+    /* Start below the floating back button so it never sits on the eyebrow row. */
+    .blog-post {
+      padding: 4.25rem 1rem 4rem;
     }
 
     .post-hero-cover {
-      margin-bottom: 1rem;
+      margin-bottom: 1.4rem;
       aspect-ratio: 16 / 9;
       border-radius: var(--radius-md);
     }
 
-    .post-author {
+    .post-lead {
+      font-size: 0.98rem;
+    }
+
+    /* Author on its own row; the figures become an evenly ruled row beneath it. */
+    .post-info {
+      gap: 0.85rem;
+    }
+
+    .post-byline {
+      flex-basis: 100%;
+    }
+
+    .post-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem 0;
       width: 100%;
-      max-width: 100%;
-      padding: 0.85rem 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px dashed var(--color-border);
+    }
+
+    .post-stat,
+    .post-stat:last-child {
+      padding: 0 0.85rem;
+    }
+
+    .post-stat:nth-child(odd) {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .post-stat:nth-child(even) {
+      border-left: 1px solid var(--color-border);
+    }
+
+    .post-author {
+      flex-wrap: wrap;
+      padding: 1rem 1.1rem;
       gap: 0.85rem;
     }
 
     .author-avatar {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
     }
 
-    .author-name {
-      font-size: 0.92rem;
+    .author-link {
+      width: 100%;
+      text-align: center;
     }
 
-    .author-signature {
-      font-size: 0.8rem;
+    .blog-post :global(.mintfolio-adjacent) {
+      grid-template-columns: 1fr;
     }
 
-    .post-footer-image {
-      max-width: 100%;
+    .blog-post :global(.mintfolio-adjacent span:last-child) {
+      text-align: left;
     }
 
-    .post-footer-image img {
-      max-height: 220px;
+    .blog-post :global(.mintfolio-adjacent span:empty) {
+      display: none;
     }
   }
 

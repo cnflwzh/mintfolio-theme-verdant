@@ -17,26 +17,29 @@ mintfolio dev
 
 Verdant 0.3 需要 Core >= 0.3.0，使用 Theme API 1.1 的分页、独立页面与全文搜索。
 
-Verdant 的 npm 包名是 @mintfolio/theme-verdant，清单 id 为 verdant，配置文件是 theme-verdant.config.mjs。命令行可使用 verdant 简写。
+Verdant 的 npm 包名是 @mintfolio/theme-verdant，清单 id 为 verdant。命令行可使用 verdant 简写。
 
 ## 调整主题
 
-站点根目录的 theme-verdant.config.mjs 是显示设置入口。它会自动生成，重复初始化或升级会保留你的修改。
+显示设置写在站点 theme.config.mjs 的 settings 中。运行 mintfolio theme use verdant 时，Core 会写入带注释的完整模板；之后升级主题不会改动你的设置。
 
 ~~~js
 export default {
-  initialMode: 'auto',
-  initialPalette: '1',
-  homePageSize: 6,
-  sidebar: {
-    quote: { enabled: true, text: '慢慢写，也认真读。', author: '' },
+  theme: '@mintfolio/theme-verdant',
+  settings: {
+    initialMode: 'auto',
+    initialPalette: '1',
+    homePageSize: 6,
+    sidebar: {
+      quote: { enabled: true, text: '慢慢写，也认真读。', author: '' },
+    },
   },
 };
 ~~~
 
 initialPalette 使用字符串 '1' 到 '8'。访客在浏览器中保存的配色偏好优先于初始值。网站标题、头像和项目内容放在 site.config.ts；侧栏、推荐文章和文末插图放在主题设置中。
 
-全部选项见 [配置模板](config/theme-verdant.config.mjs) 与 [主题配置教程](https://github.com/MintfolioBlog/mintfolio/wiki/Themes)。设置合并顺序为清单默认值、独立主题文件、旧内联 settings；数组整体替换。
+全部选项见 [设置模板](config/theme-verdant.config.mjs) 与 [主题配置教程](https://github.com/MintfolioBlog/mintfolio/wiki/Themes)。未填写的字段使用默认值；对象递归合并，数组整体替换。
 
 部署到 Astro `base` 指定的子目录时，推荐文章图片、文末插图及推荐工具的站内根路径（例如 `/images/footer.webp`）会自动加上该前缀；已经带前缀的路径不会重复处理，外部 URL 保持原样。文章、菜单和头像地址直接使用 Core 提供的结果。
 
@@ -73,3 +76,12 @@ npm pack
 ## 0.3.0 发行
 
 主题包与 manifest 统一为 0.3.0，依赖 Mintfolio Core ^0.3.0。可使用 npm install @mintfolio/theme-verdant@0.3.0 安装，随后使用 mintfolio theme use @mintfolio/theme-verdant 切换。
+
+## Google Analytics 迁移
+
+统计已迁到 Core。删除 theme.config.mjs 或 theme-verdant.config.mjs 中的 analyticsId，并在 site.config.ts 中配置 analytics: { google: { measurementId: 'G-XXXXXXXXXX' } }。新版主题不再加载 gtag.js；应与包含本次迁移的 Core/Theme API 一同更新。统计默认只在生产构建生效，客户端导航使用 GA4 的历史变化增强型衡量，不要额外发送手动 page_view。
+
+
+## 0.4.0
+
+更新首页、归档、文章和独立页面布局，新增推荐文章轮播与社交图标，调整八套配色和正文样式。支持 Core 0.4；新版配置与统计迁移方式适用于 Core 0.4。

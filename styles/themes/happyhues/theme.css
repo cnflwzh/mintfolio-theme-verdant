@@ -17,170 +17,178 @@
 
 /* 1. 青柠薄荷 */
 :root, [data-theme="light-1"] {
-  --color-bg: #f6f8ef;
-  --color-surface: #fffef9;
-  --color-text: #243d36;
-  --color-text-muted: #556660;
-  --color-primary: #08765f;
-  --color-accent: #ff795f;
-  --color-play: #e1ee79;
+  --color-bg: #f5f8ef;
+  --color-surface: #fffffa;
+  --color-text: #1f3a33;
+  --color-text-muted: #53655e;
+  --color-primary: #0a7560;
+  --color-accent: #ff7a5c;
+  --color-play: #ddef72;
 }
 
 [data-theme="dark-1"] {
-  --color-bg: #132622;
-  --color-surface: #1c342e;
-  --color-text: #edf4e5;
-  --color-text-muted: #adc5b9;
-  --color-primary: #73e0b7;
-  --color-accent: #ff9983;
-  --color-play: #d5e67b;
+  --color-bg: #11231f;
+  --color-surface: #1a312b;
+  --color-text: #ecf4e6;
+  --color-text-muted: #a9c2b6;
+  --color-primary: #6fdcb3;
+  --color-accent: #ff9a84;
+  --color-play: #d4e67a;
+  --color-on-primary: #11231f;
 }
 
 /* 2. 橘子汽水 */
 [data-theme="light-2"] {
-  --color-bg: #fff7ee;
-  --color-surface: #fffdfa;
-  --color-text: #45302b;
-  --color-text-muted: #6e564e;
-  --color-primary: #b7441c;
-  --color-accent: #526ce0;
-  --color-play: #ffc65c;
+  --color-bg: #fff6ec;
+  --color-surface: #fffcf8;
+  --color-text: #3b2820;
+  --color-text-muted: #6d5448;
+  --color-primary: #b23e0c;
+  --color-accent: #1f9c93;
+  --color-play: #ffc95e;
 }
 
 [data-theme="dark-2"] {
-  --color-bg: #2b211e;
-  --color-surface: #3a2d27;
-  --color-text: #fff1e3;
-  --color-text-muted: #d4b9a8;
-  --color-primary: #ffad83;
-  --color-accent: #9daeff;
-  --color-play: #ffd277;
+  --color-bg: #241a15;
+  --color-surface: #33251e;
+  --color-text: #fff0e2;
+  --color-text-muted: #d6bba9;
+  --color-primary: #ffa36e;
+  --color-accent: #5fd3c8;
+  --color-play: #ffd27a;
+  --color-on-primary: #241a15;
 }
 
 /* 3. 晴空海盐 */
 [data-theme="light-3"] {
-  --color-bg: #f5f6ff;
-  --color-surface: #fdfdff;
-  --color-text: #283451;
-  --color-text-muted: #5e6981;
-  --color-primary: #3454cd;
-  --color-accent: #ff9163;
-  --color-play: #cddd76;
+  --color-bg: #f2f6fd;
+  --color-surface: #fcfdff;
+  --color-text: #1d2b48;
+  --color-text-muted: #57647f;
+  --color-primary: #2c58cf;
+  --color-accent: #ff7b66;
+  --color-play: #ffd36b;
 }
 
 [data-theme="dark-3"] {
-  --color-bg: #182035;
-  --color-surface: #232e48;
-  --color-text: #eef2ff;
-  --color-text-muted: #b5c0dc;
-  --color-primary: #a5baff;
-  --color-accent: #ffa779;
-  --color-play: #d6e596;
+  --color-bg: #141c30;
+  --color-surface: #1f2a44;
+  --color-text: #edf2ff;
+  --color-text-muted: #b1bdda;
+  --color-primary: #9fb6ff;
+  --color-accent: #ff9a87;
+  --color-play: #ffd97f;
+  --color-on-primary: #141c30;
 }
 
 /* 4. 葡萄跳跳糖 */
 [data-theme="light-4"] {
-  --color-bg: #faf5ff;
-  --color-surface: #fffaff;
-  --color-text: #3f3052;
-  --color-text-muted: #746180;
-  --color-primary: #7441bc;
-  --color-accent: #bbd94f;
-  --color-play: #ffadca;
+  --color-bg: #f8f4ff;
+  --color-surface: #fefcff;
+  --color-text: #33264a;
+  --color-text-muted: #6b5a80;
+  --color-primary: #6a3dbb;
+  --color-accent: #22a58c;
+  --color-play: #ffb5d3;
 }
 
 [data-theme="dark-4"] {
-  --color-bg: #251e33;
-  --color-surface: #342a46;
-  --color-text: #f5edff;
-  --color-text-muted: #c6b3d9;
-  --color-primary: #d0acff;
-  --color-accent: #c9e477;
+  --color-bg: #1e1830;
+  --color-surface: #2b2342;
+  --color-text: #f3ecff;
+  --color-text-muted: #c3b3dc;
+  --color-primary: #c9a8ff;
+  --color-accent: #6fdcc4;
   --color-play: #f7aaca;
+  --color-on-primary: #1e1830;
 }
 
 /* 5. 莓果奶昔 */
 [data-theme="light-5"] {
-  --color-bg: #fff5f6;
-  --color-surface: #fffafb;
-  --color-text: #4d2f3b;
-  --color-text-muted: #805e6b;
-  --color-primary: #ba375e;
-  --color-accent: #73cec2;
-  --color-play: #f5c75c;
+  --color-bg: #fff4f6;
+  --color-surface: #fffbfc;
+  --color-text: #45273a;
+  --color-text-muted: #7b5a6a;
+  --color-primary: #ad2f5b;
+  --color-accent: #7a62d4;
+  --color-play: #ffc6d7;
 }
 
 [data-theme="dark-5"] {
-  --color-bg: #2d202a;
-  --color-surface: #402d38;
-  --color-text: #ffeef3;
-  --color-text-muted: #dec0ce;
-  --color-primary: #ffabc7;
-  --color-accent: #8ad9c9;
-  --color-play: #f6d47e;
+  --color-bg: #26181f;
+  --color-surface: #36232d;
+  --color-text: #ffedf3;
+  --color-text-muted: #dcbccb;
+  --color-primary: #ff9fc0;
+  --color-accent: #b1a2ff;
+  --color-play: #ffc0d3;
+  --color-on-primary: #26181f;
 }
 
 /* 6. 向日葵 */
 [data-theme="light-6"] {
-  --color-bg: #fff9e9;
-  --color-surface: #fffdf6;
-  --color-text: #473d26;
-  --color-text-muted: #6b5d43;
-  --color-primary: #91600c;
-  --color-accent: #4364cc;
-  --color-play: #f2c94c;
+  --color-bg: #fffaea;
+  --color-surface: #fffdf5;
+  --color-text: #3d321c;
+  --color-text-muted: #6a5b3c;
+  --color-primary: #8f5400;
+  --color-accent: #4c8b2b;
+  --color-play: #ffcd3c;
 }
 
 [data-theme="dark-6"] {
-  --color-bg: #29251b;
-  --color-surface: #393326;
-  --color-text: #fff4d9;
-  --color-text-muted: #cdc0a0;
-  --color-primary: #edcc75;
-  --color-accent: #9bb3ff;
-  --color-play: #ffb880;
+  --color-bg: #221d12;
+  --color-surface: #322a1a;
+  --color-text: #fff5da;
+  --color-text-muted: #d0c19c;
+  --color-primary: #f5c451;
+  --color-accent: #9fd27a;
+  --color-play: #ffcd5c;
+  --color-on-primary: #221d12;
 }
 
 /* 7. 海岛假日 */
 [data-theme="light-7"] {
-  --color-bg: #eff9fb;
-  --color-surface: #faffff;
-  --color-text: #253f47;
-  --color-text-muted: #4c6871;
-  --color-primary: #087387;
-  --color-accent: #f48652;
-  --color-play: #aadad0;
+  --color-bg: #eef8f8;
+  --color-surface: #fbffff;
+  --color-text: #1f3a42;
+  --color-text-muted: #4a666f;
+  --color-primary: #07707f;
+  --color-accent: #f47a4b;
+  --color-play: #ffd7a3;
 }
 
 [data-theme="dark-7"] {
-  --color-bg: #15272e;
-  --color-surface: #203840;
-  --color-text: #e7f5f5;
-  --color-text-muted: #afc7cc;
-  --color-primary: #80dbe4;
-  --color-accent: #ffa875;
-  --color-play: #addbd1;
+  --color-bg: #11232a;
+  --color-surface: #1b343c;
+  --color-text: #e6f5f5;
+  --color-text-muted: #a8c5ca;
+  --color-primary: #7fd8e2;
+  --color-accent: #ffa27a;
+  --color-play: #ffd3a0;
+  --color-on-primary: #11232a;
 }
 
 /* 8. 午夜游乐场 */
 [data-theme="light-8"] {
-  --color-bg: #f5f5f2;
-  --color-surface: #fdfdfa;
-  --color-text: #30394b;
-  --color-text-muted: #5c6370;
-  --color-primary: #394860;
-  --color-accent: #ffbb3b;
-  --color-play: #a4b8ec;
+  --color-bg: #f3f3f8;
+  --color-surface: #fdfdff;
+  --color-text: #23263b;
+  --color-text-muted: #5a5d73;
+  --color-primary: #4338c9;
+  --color-accent: #ec4f8b;
+  --color-play: #8fe6d6;
 }
 
 [data-theme="dark-8"] {
-  --color-bg: #1a202c;
-  --color-surface: #282f3e;
-  --color-text: #f0f1ee;
-  --color-text-muted: #b7bfce;
-  --color-primary: #c3d0ee;
-  --color-accent: #ffcb67;
-  --color-play: #9db5ef;
+  --color-bg: #12131f;
+  --color-surface: #1d1f33;
+  --color-text: #eeeefb;
+  --color-text-muted: #b3b5cf;
+  --color-primary: #a9b0ff;
+  --color-accent: #ff7fb0;
+  --color-play: #7fe3d2;
+  --color-on-primary: #12131f;
 }
 
 :root {
@@ -202,7 +210,6 @@
 
 [data-theme^="dark-"] {
   color-scheme: dark;
-  --color-on-primary: #18252d;
   --color-accent-soft: color-mix(in srgb, var(--color-accent) 17%, var(--color-surface));
   --color-play-soft: color-mix(in srgb, var(--color-play) 17%, var(--color-surface));
   --shadow-sm: 0 2px 0 #00000024;
@@ -213,13 +220,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
     color-scheme: dark;
-    --color-bg: #132622;
-    --color-surface: #1c342e;
-    --color-text: #edf4e5;
-    --color-text-muted: #adc5b9;
-    --color-primary: #73e0b7;
-    --color-accent: #ff9983;
-    --color-play: #d5e67b;
-    --color-on-primary: #18252d;
+    --color-bg: #11231f;
+    --color-surface: #1a312b;
+    --color-text: #ecf4e6;
+    --color-text-muted: #a9c2b6;
+    --color-primary: #6fdcb3;
+    --color-accent: #ff9a84;
+    --color-play: #d4e67a;
+    --color-on-primary: #11231f;
   }
 }

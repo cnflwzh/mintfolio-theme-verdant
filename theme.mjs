@@ -11,7 +11,7 @@ export default defineTheme({
   manifest: {
     id: 'verdant',
     name: 'Verdant',
-    version: '0.3.0',
+    version: '0.4.0',
     author: 'Mintfolio contributors',
     description: 'Portfolio hero, article cards, reading tools, and eight visitor-selectable palettes.',
     engine: '^1.1.0',
@@ -29,7 +29,6 @@ export default defineTheme({
     initialPalette: { type: 'select', label: '初始配色', default: '1', options: ['1', '2', '3', '4', '5', '6', '7', '8'] },
     homePageSize: { type: 'number', label: '首页初始文章数', default: 6, min: 1, max: 100 },
     archivePageSize: { type: 'number', label: '旧归档条数（兼容）', description: '静态分页请设置 site.config.ts 的 blog.pageSize；此旧字段不再控制分页。', default: 8, min: 1, max: 100 },
-    analyticsId: text('Google Analytics ID'),
     sidebar: {
       type: 'object', label: '侧边栏', default: {}, properties: {
         sections: { type: 'object', label: '显示区域', default: {}, properties: {
