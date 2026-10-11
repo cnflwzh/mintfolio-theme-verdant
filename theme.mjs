@@ -11,7 +11,7 @@ export default defineTheme({
   manifest: {
     id: 'verdant',
     name: 'Verdant',
-    version: '0.3.1',
+    version: '0.4.0',
     author: 'Mintfolio contributors',
     description: 'Portfolio hero, article cards, reading tools, and eight visitor-selectable palettes.',
     engine: '^1.1.0',

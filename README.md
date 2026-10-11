@@ -82,6 +82,6 @@ npm pack
 统计已迁到 Core。删除 theme.config.mjs 或 theme-verdant.config.mjs 中的 analyticsId，并在 site.config.ts 中配置 analytics: { google: { measurementId: 'G-XXXXXXXXXX' } }。新版主题不再加载 gtag.js；应与包含本次迁移的 Core/Theme API 一同更新。统计默认只在生产构建生效，客户端导航使用 GA4 的历史变化增强型衡量，不要额外发送手动 page_view。
 
 
-## 0.3.1
+## 0.4.0
 
 更新首页、归档、文章和独立页面布局，新增推荐文章轮播与社交图标，调整八套配色和正文样式。支持 Core 0.4；新版配置与统计迁移方式适用于 Core 0.4。
